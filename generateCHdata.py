@@ -1,6 +1,7 @@
 # -*-coding:utf-8-*-
 from PIL import Image,ImageDraw,ImageFont
 import random
+import os
 import math, string
 import logging
 # logger = logging.Logger(name='gen verification')
@@ -75,12 +76,17 @@ class ImageChar():
 err_num = 0
 for i in range(1):
     try:
-        ic = ImageChar(fontColor=(100,211, 90), size=(64,64), fontSize = 34)
-        char="你的"
-        ic.drawText((0,0),unicode(char,'utf-8'),ic.randRGB())
-        path = ''.join(char)+'_'+ic.fontPath.split('/')[-1].split('.')[0]+".png"
-        ic.save(path)
-        print "save path:", path
+        char = "乙"
+        rootPath = "/media/root/F8144D05144CC7F8/Sohu Work/Fonts/fonts/"
+        for file in os.listdir(rootPath):
+            if file is file:
+                print "font:",file
+                ic = ImageChar(fontPath =rootPath+file, fontColor=(100,211, 90), size=(64,64), fontSize = 64)
+                ic.drawText((0,0),unicode(char,'utf-8'),ic.randRGB())
+                path = './chardata/'+str(ord(unicode(char,'utf-8')))+'_'+file.replace(".","_")+".png"
+                ic.save(path)
+                print "save path:", path
+                #break
     except Exception,e:
         err_num += 1
         traceback.print_exc()

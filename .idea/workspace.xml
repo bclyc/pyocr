@@ -2,9 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f32490ad-2b69-4506-b68b-e77a9c1fb10b" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/pyocr.iml" afterPath="$PROJECT_DIR$/.idea/pyocr.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/pyocr/tesseract.py" afterPath="$PROJECT_DIR$/src/pyocr/tesseract.py" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/1.JPEG" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/413_msyh.ttf.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/413_simsunb.ttf.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/你的_FreeSans.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/你的_msyh.ttf.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/你的_ukai.ttc.png" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/chchar.py" afterPath="$PROJECT_DIR$/chchar.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/generateCHdata.py" afterPath="$PROJECT_DIR$/generateCHdata.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -16,18 +22,6 @@
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="getcharbox.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/getcharbox.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2220">
-              <caret line="120" column="0" lean-forward="false" selection-start-line="120" selection-start-column="0" selection-end-line="120" selection-end-column="0" />
-              <folding>
-                <element signature="e#0#9#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="run_tests.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/run_tests.py">
           <provider selected="true" editor-type-id="text-editor">
@@ -48,11 +42,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="tf_recog.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="tf_recog.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tf_recog.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="207">
-              <caret line="72" column="69" lean-forward="true" selection-start-line="72" selection-start-column="69" selection-end-line="72" selection-end-column="69" />
+            <state relative-caret-position="-1185">
+              <caret line="52" column="49" lean-forward="false" selection-start-line="52" selection-start-column="46" selection-end-line="52" selection-end-column="49" />
               <folding>
                 <element signature="e#70#79#0" expanded="true" />
               </folding>
@@ -60,11 +54,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="generateCHdata.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="generateCHdata.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/generateCHdata.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="500">
-              <caret line="25" column="21" lean-forward="true" selection-start-line="25" selection-start-column="21" selection-end-line="25" selection-end-column="21" />
+            <state relative-caret-position="462">
+              <caret line="91" column="29" lean-forward="false" selection-start-line="91" selection-start-column="29" selection-end-line="91" selection-end-column="29" />
               <folding>
                 <element signature="e#21#62#0" expanded="true" />
               </folding>
@@ -75,8 +69,8 @@
       <file leaf-file-name="chchar.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/chchar.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="200">
-              <caret line="10" column="18" lean-forward="true" selection-start-line="10" selection-start-column="18" selection-end-line="10" selection-end-column="18" />
+            <state relative-caret-position="220">
+              <caret line="11" column="59" lean-forward="false" selection-start-line="11" selection-start-column="59" selection-end-line="11" selection-end-column="59" />
               <folding>
                 <element signature="e#57#98#0" expanded="true" />
               </folding>
@@ -150,6 +144,8 @@
       <find>flip_up_down</find>
       <find>angle</find>
       <find>queue</find>
+      <find>wal</find>
+      <find>walk</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -171,9 +167,9 @@
         <option value="$PROJECT_DIR$/src/pyocr/tesseract.py" />
         <option value="$PROJECT_DIR$/getcharbox.py" />
         <option value="$PROJECT_DIR$/src/1.py" />
-        <option value="$PROJECT_DIR$/chchar.py" />
-        <option value="$PROJECT_DIR$/generateCHdata.py" />
         <option value="$PROJECT_DIR$/tf_recog.py" />
+        <option value="$PROJECT_DIR$/generateCHdata.py" />
+        <option value="$PROJECT_DIR$/chchar.py" />
       </list>
     </option>
   </component>
@@ -248,7 +244,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.generateCHdata">
+  <component name="RunManager" selected="Python.chchar">
     <configuration default="false" name="getcharbox" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -412,8 +408,8 @@
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Python.generateCHdata" />
-        <item index="1" class="java.lang.String" itemvalue="Python.chchar" />
+        <item index="0" class="java.lang.String" itemvalue="Python.chchar" />
+        <item index="1" class="java.lang.String" itemvalue="Python.generateCHdata" />
         <item index="2" class="java.lang.String" itemvalue="Python.tf_recog" />
         <item index="3" class="java.lang.String" itemvalue="Python.1" />
         <item index="4" class="java.lang.String" itemvalue="Python.getcharbox" />
@@ -442,7 +438,7 @@
     <frame x="64" y="-11" width="1857" height="1092" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.20187534" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.20408164" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3292683" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32882413" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -482,13 +478,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/tests/output/real/tesseract/basic_doc.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="400">
-          <caret line="20" column="2" lean-forward="false" selection-start-line="20" selection-start-column="2" selection-end-line="20" selection-end-column="2" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/tests/output/real/tesseract/basic_doc.words">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -728,7 +717,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="600">
           <caret line="30" column="59" lean-forward="false" selection-start-line="30" selection-start-column="59" selection-end-line="30" selection-end-column="59" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -737,7 +725,7 @@
         <state relative-caret-position="2220">
           <caret line="120" column="0" lean-forward="false" selection-start-line="120" selection-start-column="0" selection-end-line="120" selection-end-column="0" />
           <folding>
-            <element signature="e#0#9#0" expanded="true" />
+            <element signature="e#0#9#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -819,10 +807,28 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$USER_HOME$/.PyCharmCE2017.1/system/python_stubs/-1247972723/__builtin__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="206">
+          <caret line="1940" column="8" lean-forward="false" selection-start-line="1940" selection-start-column="8" selection-end-line="1940" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tf_recog.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1185">
+          <caret line="52" column="49" lean-forward="false" selection-start-line="52" selection-start-column="46" selection-end-line="52" selection-end-column="49" />
+          <folding>
+            <element signature="e#70#79#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/chchar.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="200">
-          <caret line="10" column="18" lean-forward="true" selection-start-line="10" selection-start-column="18" selection-end-line="10" selection-end-column="18" />
+        <state relative-caret-position="220">
+          <caret line="11" column="59" lean-forward="false" selection-start-line="11" selection-start-column="59" selection-end-line="11" selection-end-column="59" />
           <folding>
             <element signature="e#57#98#0" expanded="true" />
           </folding>
@@ -831,20 +837,10 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/generateCHdata.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="500">
-          <caret line="25" column="21" lean-forward="true" selection-start-line="25" selection-start-column="21" selection-end-line="25" selection-end-column="21" />
+        <state relative-caret-position="462">
+          <caret line="91" column="29" lean-forward="false" selection-start-line="91" selection-start-column="29" selection-end-line="91" selection-end-column="29" />
           <folding>
             <element signature="e#21#62#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tf_recog.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="207">
-          <caret line="72" column="69" lean-forward="true" selection-start-line="72" selection-start-column="69" selection-end-line="72" selection-end-column="69" />
-          <folding>
-            <element signature="e#70#79#0" expanded="true" />
           </folding>
         </state>
       </provider>
