@@ -102,8 +102,10 @@ class CharBoxBuilder(builders.BaseBuilder):
         Warning:
             The file_descriptor must support UTF-8 ! (see module 'codecs')
         """
+
         for box in boxes:
             file_descriptor.write(box.get_unicode_string() + " 0\n")
+            #print file_descriptor
 
     @staticmethod
     def __str__():
@@ -172,7 +174,7 @@ def detect_orientation(image, lang=None):
             'angle': 90,
             'confidence': 23.73,
         }
-
+tesseract test.jpg -l chi_sim result
     Raises:
         TesseractError --- if no script detected on the image
     """
@@ -265,6 +267,8 @@ def run_tesseract(input_filename, output_filename_base, cwd=None, lang=None,
     if configs is not None:
         command += configs
 
+    print "cmd",command
+
     proc = subprocess.Popen(command, cwd=cwd,
                             startupinfo=g_subprocess_startup_info,
                             creationflags=g_creation_flags,
@@ -275,6 +279,9 @@ def run_tesseract(input_filename, output_filename_base, cwd=None, lang=None,
     # asap or Tesseract will remain stuck when trying to write again on stderr.
     # In the end, we just have to make sure that proc.stderr.read() is called
     # before proc.wait()
+    print "cwd", cwd
+    print os.environ['TESSDATA_PREFIX']
+
     errors = proc.stdout.read()
     return (proc.wait(), errors)
 
@@ -350,10 +357,12 @@ def image_to_string(image, lang=None, builder=None):
         if image.mode != "RGB":
             image = image.convert("RGB")
         image.save(os.path.join(tmpdir, "input.bmp"))
+
         (status, errors) = run_tesseract("input.bmp", "output", cwd=tmpdir,
                                          lang=lang,
                                          flags=builder.tesseract_flags,
                                          configs=builder.tesseract_configs)
+
         if status:
             raise TesseractError(status, errors)
 
