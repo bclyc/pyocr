@@ -72,18 +72,41 @@ class ImageChar():
         self.image.save(path)
 
 
+def getchars():
+    file = open('/media/root/F8144D05144CC7F8/Sohu Work/chchars1.txt')
+    fonts=[]
+    while True:
+        line = file.readline()
+        if not line:
+            break
+        line=line.split('\r\n')[0]
 
+        if len(line) < 1:
+            continue
+        for word in line.split(' '):
+            word = word.strip()
+            if len(word) > 0:
+                word = ord(unicode(word, 'utf-8'))
+                fonts.append(word)
+
+    return fonts
+
+chars = getchars()
+print 'fonts:',len(chars),chars
 err_num = 0
-for i in range(1):
+
+for char in chars:
     try:
-        char = "乙"
+        #char = "乙"
         rootPath = "/media/root/F8144D05144CC7F8/Sohu Work/Fonts/fonts/"
         for file in os.listdir(rootPath):
             if file is file:
                 print "font:",file
                 ic = ImageChar(fontPath =rootPath+file, fontColor=(100,211, 90), size=(64,64), fontSize = 64)
-                ic.drawText((0,0),unicode(char,'utf-8'),ic.randRGB())
-                path = './chardata/'+str(ord(unicode(char,'utf-8')))+'_'+file.replace(".","_")+".png"
+                ic.drawText((0,0), unichr(char), ic.randRGB())
+                if not os.path.exists('/media/root/F8144D05144CC7F8/Sohu Work/chardata/'+str(char)+'/'):
+                    os.makedirs('/media/root/F8144D05144CC7F8/Sohu Work/chardata/'+str(char)+'/')
+                path = '/media/root/F8144D05144CC7F8/Sohu Work/chardata/'+str(char)+'/'+str(char)+'_'+file.replace(".","_")+".png"
                 ic.save(path)
                 print "save path:", path
                 #break
@@ -91,4 +114,3 @@ for i in range(1):
         err_num += 1
         traceback.print_exc()
         print Exception,':',e
-        continue

@@ -70,7 +70,7 @@ class DataIterator:
             images = tf.image.random_contrast(images, 0.8, 1.2)
         return images
 
-    def input_pipeline(self, batch_size, num_epochs=None, aug=False):
+    def input_pipeline(self, batch_size, num_epochs=None, aug=True):
         images_tensor = tf.convert_to_tensor(self.image_names, dtype=tf.string)
         labels_tensor = tf.convert_to_tensor(self.labels, dtype=tf.int64)
         input_queue = tf.train.slice_input_producer([images_tensor, labels_tensor], num_epochs=num_epochs)
