@@ -23,17 +23,17 @@ tf.app.flags.DEFINE_boolean('random_flip_up_down', False, "Whether to random fli
 tf.app.flags.DEFINE_boolean('random_brightness', True, "whether to adjust brightness")
 tf.app.flags.DEFINE_boolean('random_contrast', True, "whether to random constrast")
 
-tf.app.flags.DEFINE_integer('charset_size', 3755, "Choose the first `charset_size` characters only.")
+tf.app.flags.DEFINE_integer('charset_size', 3500, "Choose the first `charset_size` characters only.")
 tf.app.flags.DEFINE_integer('image_size', 64, "Needs to provide same value as in training.")
 tf.app.flags.DEFINE_boolean('gray', True, "whether to change the rbg to gray")
 tf.app.flags.DEFINE_integer('max_steps', 16002, 'the max training steps ')
 tf.app.flags.DEFINE_integer('eval_steps', 100, "the step num to eval")
-tf.app.flags.DEFINE_integer('save_steps', 500, "the steps to save")
+tf.app.flags.DEFINE_integer('save_steps', 1000, "the steps to save")
 
-tf.app.flags.DEFINE_string('checkpoint_dir', './checkpoint/', 'the checkpoint dir')
-tf.app.flags.DEFINE_string('train_data_dir', '../data/train/', 'the train dataset dir')
-tf.app.flags.DEFINE_string('test_data_dir', '../data/test/', 'the test dataset dir')
-tf.app.flags.DEFINE_string('log_dir', './tflog', 'the logging dir')
+tf.app.flags.DEFINE_string('checkpoint_dir', '/data/checkpoint/', 'the checkpoint dir')
+tf.app.flags.DEFINE_string('train_data_dir', '/data/train_test_data/train/', 'the train dataset dir')
+tf.app.flags.DEFINE_string('test_data_dir', '/data/train_test_data/test/', 'the test dataset dir')
+tf.app.flags.DEFINE_string('log_dir', '/data/tflog', 'the logging dir')
 
 tf.app.flags.DEFINE_boolean('restore', False, 'whether to restore from checkpoint')
 tf.app.flags.DEFINE_boolean('epoch', 1, 'Number of epoches')
@@ -46,13 +46,12 @@ FLAGS = tf.app.flags.FLAGS
 
 class DataIterator:
     def __init__(self, data_dir):
-        # Set FLAGS.charset_size to a small value if available computation power is limited.
-        truncate_path = data_dir + ('%05d' % FLAGS.charset_size)
+        # Set FLAGS.charset_size to a small value if available computation power is limited. ###CHANGED!
+        truncate_path = data_dir
         print(truncate_path)
         self.image_names = []
         for root, sub_folder, file_list in os.walk(data_dir):
-            if root < truncate_path:
-                self.image_names += [os.path.join(root, file_path) for file_path in file_list]
+            self.image_names += [os.path.join(root, file_path) for file_path in file_list]
         random.shuffle(self.image_names)
         self.labels = [int(file_name[len(data_dir):].split(os.sep)[0]) for file_name in self.image_names]
 
@@ -149,76 +148,78 @@ def build_graph(top_k):
 
 def train():
     print('Begin training')
-    train_feeder = DataIterator(data_dir='../data/train/')
-    test_feeder = DataIterator(data_dir='../data/test/')
-    model_name = 'chinese-rec-model'
+    train_feeder = DataIterator(data_dir='/data/train_test_data/train/')
+    test_feeder = DataIterator(data_dir='/data/train_test_data/test/')
+    model_name = 'cnCharReg-model'
     with tf.Session(config=tf.ConfigProto(gpu_options=gpu_options, allow_soft_placement=True)) as sess:
-        train_images, train_labels = train_feeder.input_pipeline(batch_size=FLAGS.batch_size, aug=True)
-        test_images, test_labels = test_feeder.input_pipeline(batch_size=FLAGS.batch_size)
-        graph = build_graph(top_k=1)
-        saver = tf.train.Saver()
-        sess.run(tf.global_variables_initializer())
-        coord = tf.train.Coordinator()
-        threads = tf.train.start_queue_runners(sess=sess, coord=coord)
+	with tf.device("/cpu:0"):
+		print "trainsize:",train_feeder.size,",testsize:",test_feeder.size
+		train_images, train_labels = train_feeder.input_pipeline(batch_size=FLAGS.batch_size, aug=True)
+		test_images, test_labels = test_feeder.input_pipeline(batch_size=FLAGS.batch_size)
+		graph = build_graph(top_k=1)
+		saver = tf.train.Saver()
+		sess.run(tf.global_variables_initializer())
+		coord = tf.train.Coordinator()
+		threads = tf.train.start_queue_runners(sess=sess, coord=coord)
 
-        train_writer = tf.summary.FileWriter(FLAGS.log_dir + '/train', sess.graph)
-        test_writer = tf.summary.FileWriter(FLAGS.log_dir + '/val')
-        start_step = 0
-        if FLAGS.restore:
-            ckpt = tf.train.latest_checkpoint(FLAGS.checkpoint_dir)
-            if ckpt:
-                saver.restore(sess, ckpt)
-                print("restore from the checkpoint {0}".format(ckpt))
-                start_step += int(ckpt.split('-')[-1])
+		train_writer = tf.summary.FileWriter(FLAGS.log_dir + '/train', sess.graph)
+		test_writer = tf.summary.FileWriter(FLAGS.log_dir + '/val')
+		start_step = 0
+		if FLAGS.restore:
+		    ckpt = tf.train.latest_checkpoint(FLAGS.checkpoint_dir)
+		    if ckpt:
+		        saver.restore(sess, ckpt)
+		        print("restore from the checkpoint {0}".format(ckpt))
+		        start_step += int(ckpt.split('-')[-1])
 
-        logger.info(':::Training Start:::')
-        try:
-            i = 0
-            while not coord.should_stop():
-                i += 1
-                start_time = time.time()
-                train_images_batch, train_labels_batch = sess.run([train_images, train_labels])
-                feed_dict = {graph['images']: train_images_batch,
-                             graph['labels']: train_labels_batch,
-                             graph['keep_prob']: 0.8,
-                             graph['is_training']: True}
-                _, loss_val, train_summary, step = sess.run(
-                    [graph['train_op'], graph['loss'], graph['merged_summary_op'], graph['global_step']],
-                    feed_dict=feed_dict)
-                train_writer.add_summary(train_summary, step)
-                end_time = time.time()
-                logger.info("the step {0} takes {1} loss {2}".format(step, end_time - start_time, loss_val))
-                if step > FLAGS.max_steps:
-                    break
-                if step % FLAGS.eval_steps == 1:
-                    test_images_batch, test_labels_batch = sess.run([test_images, test_labels])
-                    feed_dict = {graph['images']: test_images_batch,
-                                 graph['labels']: test_labels_batch,
-                                 graph['keep_prob']: 1.0,
-                                 graph['is_training']: False}
-                    accuracy_test, test_summary = sess.run([graph['accuracy'], graph['merged_summary_op']],
-                                                           feed_dict=feed_dict)
-                    if step > 300:
-                        test_writer.add_summary(test_summary, step)
-                    logger.info('===============Eval a batch=======================')
-                    logger.info('the step {0} test accuracy: {1}'
-                                .format(step, accuracy_test))
-                    logger.info('===============Eval a batch=======================')
-                if step % FLAGS.save_steps == 1:
-                    logger.info('Save the ckpt of {0}'.format(step))
-                    saver.save(sess, os.path.join(FLAGS.checkpoint_dir, model_name),
-                               global_step=graph['global_step'])
-        except tf.errors.OutOfRangeError:
-            logger.info('==================Train Finished================')
-            saver.save(sess, os.path.join(FLAGS.checkpoint_dir, model_name), global_step=graph['global_step'])
-        finally:
-            coord.request_stop()
-        coord.join(threads)
+		logger.info(':::Training Start:::')
+		try:
+		    i = 0
+		    while not coord.should_stop():
+			i += 1
+		        start_time = time.time()
+		        train_images_batch, train_labels_batch = sess.run([train_images, train_labels])
+		        feed_dict = {graph['images']: train_images_batch,
+		                     graph['labels']: train_labels_batch,
+		                     graph['keep_prob']: 0.8,
+		                     graph['is_training']: True}
+		        _, loss_val, train_summary, step = sess.run(
+		            [graph['train_op'], graph['loss'], graph['merged_summary_op'], graph['global_step']],
+		            feed_dict=feed_dict)
+		        train_writer.add_summary(train_summary, step)
+		        end_time = time.time()
+		        logger.info("the step {0} takes {1} loss {2}".format(step, end_time - start_time, loss_val))
+			if step > FLAGS.max_steps:
+		            break
+		        if step % FLAGS.eval_steps == 1:
+		            test_images_batch, test_labels_batch = sess.run([test_images, test_labels])
+		            feed_dict = {graph['images']: test_images_batch,
+		                         graph['labels']: test_labels_batch,
+		                         graph['keep_prob']: 1.0,
+		                         graph['is_training']: False}
+		            accuracy_test, test_summary = sess.run([graph['accuracy'], graph['merged_summary_op']],
+		                                                   feed_dict=feed_dict)
+		            if step > 300:
+		                test_writer.add_summary(test_summary, step)
+		            logger.info('===============Eval a batch=======================')
+		            logger.info('the step {0} test accuracy: {1}'
+		                        .format(step, accuracy_test))
+		            logger.info('===============Eval a batch=======================')
+		        if step % FLAGS.save_steps == 1:
+		            logger.info('Save the ckpt of {0}'.format(step))
+		            saver.save(sess, os.path.join(FLAGS.checkpoint_dir, model_name),
+		                       global_step=graph['global_step'])
+		except tf.errors.OutOfRangeError:
+		    logger.info('==================Train Finished================')
+		    saver.save(sess, os.path.join(FLAGS.checkpoint_dir, model_name), global_step=graph['global_step'])
+		finally:
+		    coord.request_stop()
+		coord.join(threads)
 
 
 def validation():
     print('Begin validation')
-    test_feeder = DataIterator(data_dir='../data/test/')
+    test_feeder = DataIterator(data_dir='/data/train_test_data/test/')
 
     final_predict_val = []
     final_predict_index = []

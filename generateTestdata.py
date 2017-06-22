@@ -99,19 +99,19 @@ def printchars(chars,start,end):
 	err_num = 0
 
 	for char in chars[start:end]:
-    
+	    
 		#char = "乙"
 		print "process:", multiprocessing.current_process().name, " saving char:", char
-	
-		rootPath = "/usr/workspace/LiuYongChao/fonts/"
+		
+		rootPath = "/usr/workspace/LiuYongChao/linux_win_chfonts/"
 		for file in os.listdir(rootPath):
 		    if file is file:
 			try:
 				ic = ImageChar(fontPath =rootPath+file, fontColor=(100,211, 90), size=(64,64), fontSize = 54)
 				ic.drawText((0,0), unichr(char), ic.randRGB())
-				if not os.path.exists('/data/train_test_data/train/'+str(char)+'/'):
-				    os.makedirs('/data/train_test_data/train/'+str(char)+'/')
-				path = '/data/train_test_data/train/'+str(char)+'/'+str(char)+'_'+file.replace(".","_")+".png"
+				if not os.path.exists('/data/train_test_data/test/'+str(char)+'/'):
+				    os.makedirs('/data/train_test_data/test/'+str(char)+'/')
+				path = '/data/train_test_data/test/'+str(char)+'/'+str(char)+'_'+file.replace(".","_")+".png"
 				ic.save(path)
 				#print "save path:", path
 				#break
