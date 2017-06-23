@@ -37,10 +37,10 @@ tf.app.flags.DEFINE_string('log_dir', '/data/tflog', 'the logging dir')
 
 tf.app.flags.DEFINE_boolean('restore', False, 'whether to restore from checkpoint')
 tf.app.flags.DEFINE_boolean('epoch', 1, 'Number of epoches')
-tf.app.flags.DEFINE_boolean('batch_size', 128, 'Validation batch size')
+tf.app.flags.DEFINE_boolean('batch_size', 256, 'Validation batch size')
 tf.app.flags.DEFINE_string('mode', 'validation', 'Running mode. One of {"train", "valid", "test"}')
 
-gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.333)
+#gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.333)
 FLAGS = tf.app.flags.FLAGS
 
 
@@ -120,7 +120,7 @@ def build_graph(top_k):
         loss = control_flow_ops.with_dependencies([updates], loss)
 
     global_step = tf.get_variable("step", [], initializer=tf.constant_initializer(0.0), trainable=False)
-    optimizer = tf.train.AdamOptimizer(learning_rate=0.1)
+    optimizer = tf.train.AdamOptimizer(learning_rate=0.01)	#learning rate
     train_op = slim.learning.create_train_op(loss, optimizer, global_step=global_step)
     probabilities = tf.nn.softmax(logits)
 
@@ -151,7 +151,7 @@ def train():
     train_feeder = DataIterator(data_dir='/data/train_test_data/train/')
     test_feeder = DataIterator(data_dir='/data/train_test_data/test/')
     model_name = 'cnCharReg-model'
-    with tf.Session(config=tf.ConfigProto(gpu_options=gpu_options, allow_soft_placement=True)) as sess:
+    with tf.Session(config=tf.ConfigProto(allow_soft_placement=True)) as sess:
 	with tf.device("/cpu:0"):
 		print "trainsize:",train_feeder.size,",testsize:",test_feeder.size
 		train_images, train_labels = train_feeder.input_pipeline(batch_size=FLAGS.batch_size, aug=True)
