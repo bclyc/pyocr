@@ -23,7 +23,7 @@ tf.app.flags.DEFINE_boolean('random_flip_up_down', False, "Whether to random fli
 tf.app.flags.DEFINE_boolean('random_brightness', True, "whether to adjust brightness")
 tf.app.flags.DEFINE_boolean('random_contrast', True, "whether to random constrast")
 
-tf.app.flags.DEFINE_integer('charset_size', 3500, "Choose the first `charset_size` characters only.")
+tf.app.flags.DEFINE_integer('charset_size', 3590, "Choose the first `charset_size` characters only.")
 tf.app.flags.DEFINE_integer('image_size', 64, "Needs to provide same value as in training.")
 tf.app.flags.DEFINE_boolean('gray', True, "whether to change the rbg to gray")
 tf.app.flags.DEFINE_integer('max_steps', 16002, 'the max training steps ')
@@ -120,7 +120,7 @@ def build_graph(top_k):
         loss = control_flow_ops.with_dependencies([updates], loss)
 
     global_step = tf.get_variable("step", [], initializer=tf.constant_initializer(0.0), trainable=False)
-    optimizer = tf.train.AdamOptimizer(learning_rate=0.01)	#learning rate
+    optimizer = tf.train.AdamOptimizer(learning_rate=0.05)	#learning rate
     train_op = slim.learning.create_train_op(loss, optimizer, global_step=global_step)
     probabilities = tf.nn.softmax(logits)
 

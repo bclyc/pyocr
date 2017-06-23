@@ -1,9 +1,9 @@
 import os
 
 #build ASCII to Label relation
-charlist = sorted(os.listdir('/data/train_test_data/test'))
-f = open('/data/train_test_data/charToLabel.txt','w+')
-label=0
+charlist = sorted(os.listdir('/data/elsedata/train'))
+f = open('/data/elsedata/charToLabel.txt','w+')
+label=3500
 for char in charlist:
 	f.write(str(label)+" ")
 	f.write(char+" ")
@@ -13,10 +13,10 @@ for char in charlist:
 f.close()
 
 #change folder name from ASCII to Label
-label=0
+label=3500
 for char in charlist:
 	str1=str(label)	
-	os.rename('/data/train_test_data/test/'+char,'/data/train_test_data/test/'+str1.zfill(4))
+	os.rename('/data/elsedata/train/'+char,'/data/elsedata/train/'+str1.zfill(4))
 	label=label+1
 	
 

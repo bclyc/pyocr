@@ -1,0 +1,38 @@
+2017-06-23 17:05:06.183489: W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use SSE4.1 instructions, but these are available on your machine and could speed up CPU computations.
+2017-06-23 17:05:06.183527: W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use SSE4.2 instructions, but these are available on your machine and could speed up CPU computations.
+2017-06-23 17:05:06.183535: W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use AVX instructions, but these are available on your machine and could speed up CPU computations.
+2017-06-23 17:05:06.183540: W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use AVX2 instructions, but these are available on your machine and could speed up CPU computations.
+2017-06-23 17:05:06.183545: W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use FMA instructions, but these are available on your machine and could speed up CPU computations.
+:::Training Start:::
+the step 1.0 takes 96.0890758038 loss 8.74610424042
+===============Eval a batch=======================
+the step 1.0 test accuracy: 0.0
+===============Eval a batch=======================
+Save the ckpt of 1.0
+the step 2.0 takes 8.95507407188 loss 8.46141624451
+the step 3.0 takes 8.96335792542 loss 8.33611679077
+the step 4.0 takes 8.79552817345 loss 8.2946023941
+the step 5.0 takes 8.99757695198 loss 8.36956310272
+the step 6.0 takes 8.67174983025 loss 8.26969909668
+the step 7.0 takes 8.78126096725 loss 8.34627151489
+the step 8.0 takes 8.70847201347 loss 8.38667678833
+the step 9.0 takes 8.82662796974 loss 8.28620815277
+the step 10.0 takes 9.13169193268 loss 8.38661003113
+the step 11.0 takes 8.94046187401 loss 8.42539596558
+the step 12.0 takes 8.76144504547 loss 8.32880115509
+the step 13.0 takes 8.97326493263 loss 8.3804101944
+the step 14.0 takes 8.94849300385 loss 8.45573806763
+the step 15.0 takes 8.92085504532 loss 8.34913063049
+the step 16.0 takes 8.86816501617 loss 8.32188796997
+the step 17.0 takes 9.00797891617 loss 8.44177341461
+the step 18.0 takes 8.65694904327 loss 8.39462089539
+the step 19.0 takes 8.76365399361 loss 8.33572006226
+the step 20.0 takes 8.95333099365 loss 8.38325309753
+the step 21.0 takes 8.99897503853 loss 8.38203144073
+the step 22.0 takes 8.76748394966 loss 8.317943573
+the step 23.0 takes 8.73736000061 loss 8.38072109222
+the step 24.0 takes 8.77081108093 loss 8.32518768311
+the step 25.0 takes 8.6756541729 loss 8.33011817932
+the step 26.0 takes 8.65574193001 loss 8.29462337494
+the step 27.0 takes 8.62157607079 loss 8.39948940277
+the step 28.0 takes 8.48785114288 loss 8.29305267334
