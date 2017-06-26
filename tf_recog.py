@@ -120,7 +120,7 @@ def build_graph(top_k):
         loss = control_flow_ops.with_dependencies([updates], loss)
 
     global_step = tf.get_variable("step", [], initializer=tf.constant_initializer(0.0), trainable=False)
-    optimizer = tf.train.AdamOptimizer(learning_rate=0.05)	#learning rate
+    optimizer = tf.train.AdamOptimizer(learning_rate=0.01)	#learning rate
     train_op = slim.learning.create_train_op(loss, optimizer, global_step=global_step)
     probabilities = tf.nn.softmax(logits)
 

@@ -9,6 +9,7 @@ import pickle
 import sys
 from PIL import Image
 from tensorflow.python.ops import control_flow_ops
+import getcharbox
 
 logger = logging.getLogger('char recognition')
 logger.setLevel(logging.INFO)
@@ -21,7 +22,7 @@ tf.app.flags.DEFINE_boolean('random_flip_up_down', False, "Whether to random fli
 tf.app.flags.DEFINE_boolean('random_brightness', True, "whether to adjust brightness")
 tf.app.flags.DEFINE_boolean('random_contrast', True, "whether to random constrast")
 
-tf.app.flags.DEFINE_integer('charset_size', 3500, "Choose the first `charset_size` characters only.")
+tf.app.flags.DEFINE_integer('charset_size', 3590, "Choose the first `charset_size` characters only.")
 tf.app.flags.DEFINE_integer('image_size', 64, "Needs to provide same value as in training.")
 tf.app.flags.DEFINE_boolean('gray', True, "whether to change the rbg to gray")
 tf.app.flags.DEFINE_integer('max_steps', 16002, 'the max training steps ')
@@ -102,20 +103,15 @@ def build_graph(top_k):
 
 
 def labelToAscii(l):
-	f = open("/data/train_test_data/charToLabel.txt","r+")
-	chardict={}	
-	for line in f.readlines():
-		label,asc = line.strip().split(' ')[0:2]
-		chardict[int(label)] = asc
-	return chardict[l]
+    f = open("/data/train_test_data/charToLabel.txt","r+")
+    chardict={}
+    for line in f.readlines():
+        label,asc = line.strip().split(' ')[0:2]
+        chardict[int(label)] = asc
+    return chardict[l]
 
 
-def recog(image):
-    print('char_recog')
-    temp_image = Image.open(image).convert('L')
-    temp_image = temp_image.resize((FLAGS.image_size, FLAGS.image_size), Image.ANTIALIAS)
-    temp_image = np.asarray(temp_image) / 255.0
-    temp_image = temp_image.reshape([-1, 64, 64, 1])
+def initTF():
     with tf.Session() as sess:
         logger.info('========start inference============')
         # images = tf.placeholder(dtype=tf.float32, shape=[None, 64, 64, 1])
@@ -125,15 +121,36 @@ def recog(image):
         ckpt = tf.train.latest_checkpoint(FLAGS.checkpoint_dir)
         if ckpt:
             saver.restore(sess, ckpt)
-        predict_val, predict_index = sess.run([graph['predicted_val_top_k'], graph['predicted_index_top_k']],
-                                              feed_dict={graph['images']: temp_image,
-                                                         graph['keep_prob']: 1.0,
-                                                         graph['is_training']: False})
+
+    return sess,graph
+
+
+def recog(cropImage, sess, graph):
+    print('char_recog')
+    #temp_image = Image.open(image).convert('L')
+    temp_image = cropImage.resize((FLAGS.image_size, FLAGS.image_size), Image.ANTIALIAS)
+    temp_image = np.asarray(temp_image) / 255.0
+    temp_image = temp_image.reshape([-1, 64, 64, 1])
+
+
+    t1 = time.time()
+    predict_val, predict_index = sess.run([graph['predicted_val_top_k'], graph['predicted_index_top_k']],
+                                          feed_dict={graph['images']: temp_image,
+                                                     graph['keep_prob']: 1.0,
+                                                     graph['is_training']: False})
     charuni=unichr(int(labelToAscii(predict_index[0][0])))
     print "predict_val:",predict_val[0][0],"predict_index:",predict_index[0][0],"char:",charuni
+    print "used time:", time.time()-t1
     return predict_val, predict_index, charuni
 
+
 if __name__=='__main__':
-	imageName=sys.argv[1]
-	recog(imageName)
+    sess, graph = initTF()
+    imageName=sys.argv[1]
+    temp_image = Image.open(imageName).convert('L')
+    bbox = getcharbox.getCharBox(imageName)
+    for box in bbox:
+        cropImage = temp_image.crop(box)
+        recog(cropImage, sess, graph)
+
 
