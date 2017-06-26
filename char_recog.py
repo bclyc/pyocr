@@ -112,21 +112,21 @@ def labelToAscii(l):
 
 
 def initTF():
-    with tf.Session() as sess:
-        logger.info('========start inference============')
-        # images = tf.placeholder(dtype=tf.float32, shape=[None, 64, 64, 1])
-        # Pass a shadow label 0. This label will not affect the computation graph.
-        graph = build_graph(top_k=1)
-        saver = tf.train.Saver()
-        ckpt = tf.train.latest_checkpoint(FLAGS.checkpoint_dir)
-        if ckpt:
-            saver.restore(sess, ckpt)
+	sess = tf.Session()
+	logger.info('========start inference============')
+	# images = tf.placeholder(dtype=tf.float32, shape=[None, 64, 64, 1])
+	# Pass a shadow label 0. This label will not affect the computation graph.
+	graph = build_graph(top_k=1)
+	saver = tf.train.Saver()
+	ckpt = tf.train.latest_checkpoint(FLAGS.checkpoint_dir)
+	if ckpt:
+	    saver.restore(sess, ckpt)
 
-    return sess,graph
+	return sess,graph
 
 
 def recog(cropImage, sess, graph):
-    print('char_recog')
+    #print('char_recog')
     #temp_image = Image.open(image).convert('L')
     temp_image = cropImage.resize((FLAGS.image_size, FLAGS.image_size), Image.ANTIALIAS)
     temp_image = np.asarray(temp_image) / 255.0
@@ -140,17 +140,24 @@ def recog(cropImage, sess, graph):
                                                      graph['is_training']: False})
     charuni=unichr(int(labelToAscii(predict_index[0][0])))
     print "predict_val:",predict_val[0][0],"predict_index:",predict_index[0][0],"char:",charuni
-    print "used time:", time.time()-t1
+    #print "used time:", time.time()-t1
     return predict_val, predict_index, charuni
 
 
 if __name__=='__main__':
-    sess, graph = initTF()
-    imageName=sys.argv[1]
-    temp_image = Image.open(imageName).convert('L')
-    bbox = getcharbox.getCharBox(imageName)
-    for box in bbox:
-        cropImage = temp_image.crop(box)
-        recog(cropImage, sess, graph)
+	sess, graph = initTF()
+	imageName=sys.argv[1]
+	temp_image = Image.open(imageName).convert('L')
+	bbox = getcharbox.getCharBox(imageName)
+	for box in bbox:
+		#box=bbox[2]
+		cropImage = temp_image.crop(box)
+		cropImage = cropImage.resize((64/cropImage.size[1]*cropImage.size[0], 64), Image.ANTIALIAS)
+		#backg = Image.new('L',(FLAGS.image_size,FLAGS.image_size),cropImage.getpixel((0,0)))
+		#backg.paste(cropImage,(FLAGS.image_size/2-cropImage.size[0]/2,5))
+		#backg = Image.open("/usr/workspace/LiuYongChao/pyocr/tests/charboxtest/testcrop2.jpg").convert('L')
+		#recog(backg, sess, graph)
+		cropImage.save('/usr/workspace/LiuYongChao/pyocr/tests/cropImage/'+str(box[0])+"-"+str(box[1])+".jpg")
+	
 
 

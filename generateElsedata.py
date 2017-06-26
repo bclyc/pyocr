@@ -1,5 +1,5 @@
 # -*-coding:utf-8-*-
-from PIL import Image,ImageDraw,ImageFont
+from PIL import Image, ImageDraw, ImageFont
 import random
 import os
 import math, string
@@ -8,6 +8,7 @@ import logging
 import traceback
 import multiprocessing
 import time
+
 
 class RandomChar():
     @staticmethod
@@ -20,16 +21,17 @@ class RandomChar():
         head = random.randint(0xB0, 0xCF)
         body = random.randint(0xA, 0xF)
         tail = random.randint(0, 0xF)
-        val = ( head << 8 ) | (body << 4) | tail
+        val = (head << 8) | (body << 4) | tail
         str = "%x" % val
         return str.decode('hex').decode('gb2312')
 
+
 class ImageChar():
-    def __init__(self, fontColor = (0, 0, 0),
-    size = (100, 40),
-    fontPath = '/usr/share/fonts/truetype/FreeSans',
-    bgColor = (255, 255, 255),
-    fontSize = 30):
+    def __init__(self, fontColor=(0, 0, 0),
+                 size=(100, 40),
+                 fontPath='/usr/share/fonts/truetype/FreeSans',
+                 bgColor=(255, 255, 255),
+                 fontSize=30):
         self.size = size
         self.fontPath = fontPath
         self.bgColor = bgColor
@@ -44,15 +46,15 @@ class ImageChar():
         del draw
 
     def drawTextV2(self, pos, txt, fill, angle=180):
-        image=Image.new('RGB', (25,25), (255,255,255))
+        image = Image.new('RGB', (25, 25), (255, 255, 255))
         draw = ImageDraw.Draw(image)
-        draw.text( (0, -3), txt,  font=self.font, fill=fill)
-        w=image.rotate(angle,  expand=1)
+        draw.text((0, -3), txt, font=self.font, fill=fill)
+        w = image.rotate(angle, expand=1)
         self.image.paste(w, box=pos)
         del draw
 
     def randRGB(self):
-        return (0,0,0)
+        return (0, 0, 0)
 
     def randChinese(self, num, num_flip):
         gap = 1
@@ -70,79 +72,134 @@ class ImageChar():
             else:
                 self.drawText((x, 0), char, self.randRGB())
         return char_list, num_flip_list
+
     def save(self, path):
         self.image.save(path)
 
 
 def getchars():
     file = open('/usr/workspace/LiuYongChao/elsechars.txt')
-    fonts=[]
+    fonts = []
     while True:
         line = file.readline()
         if not line:
             break
-        line=line.split('\r\n')[0]
+        line = line.split('\r\n')[0]
 
         if len(line) < 1:
             continue
         for word in line.split(' '):
             word = word.strip()
             if len(word) > 0:
-		word = ord(unicode(word, 'utf-8'))
+                word = ord(unicode(word, 'utf-8'))
                 fonts.append(word)
 
     return fonts
 
-def printchars(chars,start,end):
-	
-	print 'fonts:',start,"-",end
-	err_num = 0
 
-	for char in chars[start:end]:
-    
-		#char = 105
-		print "process:", multiprocessing.current_process().name, " saving char:", char
-	
-		rootPath = "/usr/workspace/LiuYongChao/fonts/"
-		for file in os.listdir(rootPath):
-		    if file is file:
-			try:
-				ic = ImageChar(fontPath =rootPath+file, fontColor=(100,211, 90), size=(64,64), fontSize = 54)
-				ic.drawText((20,0), unichr(char), ic.randRGB())
-				if not os.path.exists('/data/elsedata/train/'+str(char)+'/'):
-				    os.makedirs('/data/elsedata/train/'+str(char)+'/')
-				path = '/data/elsedata/train/'+str(char)+'/'+str(char)+'_'+file.replace(".","_")+".png"
-				ic.save(path)
-				#print "save path:", path
-				#break
-		    	except Exception,e:
-				err_num += 1
-				traceback.print_exc()
-				print Exception,':',e
+f = open("/data/train_test_data/charToLabel.txt","r+")
+chardict={}
+for line in f.readlines():
+    label,asc = line.strip().split(' ')[0:2]
+    chardict[int(asc)] = label
+
+def asciiTolabel(l):
+
+    return chardict[l]
+
+
+def printchars(chars, start, end):
+    print 'fonts:', start, "-", end
+    err_num = 0
+
+    for char in chars[start:end]:
+
+        #char = 20113
+        print "process:", multiprocessing.current_process().name, " saving char:", char
+
+        rootPath = "/usr/workspace/LiuYongChao/linux_win_chfonts/"
+        for file in os.listdir(rootPath):
+            if file is file:
+                try:
+                    ic = ImageChar(fontPath=rootPath + file, fontColor=(100, 211, 90), size=(64, 64), fontSize=48)
+                    ic.drawText((0, 0), unichr(char), ic.randRGB())
+                    xmin = -1;
+                    xmax = -1;
+                    ymin = -1;
+                    ymax = -1;
+                    for x in range(0,64):
+                        for y in range(0,64):
+                            if ic.image.getpixel((x, y))[0] != 255:
+                                xmin = (x if xmin == -1 else xmin)
+                                break
+                        if xmin!=-1:
+                            break
+                    for x in reversed(range(0, 64)):
+                        for y in range(0, 64):
+                            if ic.image.getpixel((x, y))[0] != 255:
+                                xmax = (x if xmax == -1 else xmax)
+                                break
+                        if xmax != -1:
+                            break
+
+                    for y in range(0, 64):
+                        for x in range(0, 64):
+                            if ic.image.getpixel((x, y))[0] != 255:
+                                ymin = (y if ymin == -1 else ymin)
+                                break
+                        if ymin != -1:
+                            break
+
+                    for y in reversed(range(0, 64)):
+                        for x in range(0, 64):
+                            if ic.image.getpixel((x, y))[0] != 255:
+                                ymax = (y if ymax == -1 else ymax)
+                                break
+                        if ymax != -1:
+                            break
+
+
+                    if xmin!=-1 and xmax!=-1:
+                        ic.image = ic.image.crop((xmin,ymin,xmax+1,ymax+1)).resize((64,64), Image.ANTIALIAS)
+                        charlabel = asciiTolabel(char).zfill(4)
+                        if not os.path.exists('/data/train_test_data/test/' + charlabel + '/'):
+                            os.makedirs('/data/train_test_data/test/' + charlabel + '/')
+                        path = '/data/train_test_data/test/' + charlabel + '/' + charlabel + '_' + file.replace(".", "_") + ".png"
+                        ic.save(path)
+                    # print "save path:", path
+                    # break
+                except Exception, e:
+                    err_num += 1
+                    traceback.print_exc()
+                    print Exception, ':', e
 
 
 if __name__ == "__main__":
-	tstart=time.time()
-	chars = getchars()
-	p1 = multiprocessing.Process(target = printchars, args = (chars,0,45))
-	p2 = multiprocessing.Process(target = printchars, args = (chars,45,90))
-	#p3 = multiprocessing.Process(target = printchars, args = (chars,1000,1500))
-	#p4 = multiprocessing.Process(target = printchars, args = (chars,1500,2000))
-	#p5 = multiprocessing.Process(target = printchars, args = (chars,2000,2500))
-	#p6 = multiprocessing.Process(target = printchars, args = (chars,2500,3000))
-	#p7 = multiprocessing.Process(target = printchars, args = (chars,3000,3500))
-	#procs=[p1,p2,p3,p4,p5,p6,p7]
-	procs=[p1,p2]
+    tstart = time.time()
+    chars = getchars()
 
-	print("The number of CPU is:" + str(multiprocessing.cpu_count()))
-	for p in multiprocessing.active_children():
-		print("child   p.name:" + p.name + "\tp.id" + str(p.pid))
+    procs = []
+    for i in range(20):
+        p = multiprocessing.Process(target=printchars, args=(chars, int(i*len(chars)/20), int((i+1)*len(chars)/20)))
+        procs.append(p)
+    # p1 = multiprocessing.Process(target=printchars, args=(chars, 0, 1))
+    # p2 = multiprocessing.Process(target=printchars, args=(chars, 500, 1100))
+    # p3 = multiprocessing.Process(target=printchars, args=(chars, 1000, 1500))
+    # p4 = multiprocessing.Process(target=printchars, args=(chars, 1500, 2000))
+    # p5 = multiprocessing.Process(target=printchars, args=(chars, 2000, 2500))
+    # p6 = multiprocessing.Process(target=printchars, args=(chars, 2500, 3000))
+    # p7 = multiprocessing.Process(target=printchars, args=(chars, 3000, 3500))
 
-	for p in procs:
-		p.start();
-	for p in procs:
-		p.join();	
-	
+        
 
-	tend=time.time()
-	print "Finished! Time used:",tend-tstart
+    print("The number of CPU is:" + str(multiprocessing.cpu_count()))
+    for p in multiprocessing.active_children():
+        print("child   p.name:" + p.name + "\tp.id" + str(p.pid))
+
+    for p in procs:
+        p.start();
+    for p in procs:
+        p.join();
+
+    tend = time.time()
+    print "Finished! Time used:", tend - tstart

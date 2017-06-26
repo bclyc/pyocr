@@ -120,7 +120,7 @@ def build_graph(top_k):
         loss = control_flow_ops.with_dependencies([updates], loss)
 
     global_step = tf.get_variable("step", [], initializer=tf.constant_initializer(0.0), trainable=False)
-    optimizer = tf.train.AdamOptimizer(learning_rate=0.01)	#learning rate
+    optimizer = tf.train.AdamOptimizer(learning_rate=0.1)	#learning rate
     train_op = slim.learning.create_train_op(loss, optimizer, global_step=global_step)
     probabilities = tf.nn.softmax(logits)
 
@@ -153,7 +153,7 @@ def train():
     model_name = 'cnCharReg-model'
     with tf.Session(config=tf.ConfigProto(allow_soft_placement=True)) as sess:
 	with tf.device("/cpu:0"):
-		print "trainsize:",train_feeder.size,",testsize:",test_feeder.size
+		logger.info("trainsize:"+str(train_feeder.size)+",testsize:"+str(test_feeder.size))
 		train_images, train_labels = train_feeder.input_pipeline(batch_size=FLAGS.batch_size, aug=True)
 		test_images, test_labels = test_feeder.input_pipeline(batch_size=FLAGS.batch_size)
 		graph = build_graph(top_k=1)

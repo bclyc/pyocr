@@ -3,6 +3,7 @@ import codecs
 import tempfile
 import sys
 import time
+import traceback
 
 
 from src.pyocr import builders
@@ -140,44 +141,47 @@ def getCharBox(imagePath):
     # charBox.test_write_read()
     # print "timecost:", time.time() - t0
     t1 = time.time()
-
-    inputImage = Image.open(imagePath)
-    tesseract_raw.set_page_seg_mode(handle=handle, mode=2)
-    # tesseract_raw.set_is_numeric(handle=handle, mode=3)
-    tesseract_raw.init_for_analyse_page(handle=handle)
-    tesseract_raw.set_image(handle=handle, image=inputImage)
-    tesseract_raw.analyse_layout(handle=handle)
-
-    iterator = tesseract_raw.get_iterator(handle)
-    #print iterator
-
     bbox=[]
-    count = 1
-    imagedraw = ImageDraw.Draw(inputImage)
+    try:
+	    inputImage = Image.open(imagePath)
+	    tesseract_raw.set_page_seg_mode(handle=handle, mode=2)
+	    # tesseract_raw.set_is_numeric(handle=handle, mode=3)
+	    tesseract_raw.init_for_analyse_page(handle=handle)
+	    tesseract_raw.set_image(handle=handle, image=inputImage)
+	    tesseract_raw.analyse_layout(handle=handle)
 
-    level = 4
-    coord = tesseract_raw.page_iterator_bounding_box(iterator=iterator, level=level)[1]
-    print tesseract_raw.page_iterator_bounding_box(iterator=iterator, level=level)
-    imagedraw.line(coord, fill=10)
-    while tesseract_raw.page_iterator_next(iterator, level=level):
-        coord = tesseract_raw.page_iterator_bounding_box(iterator=iterator, level=level)[1]
-        print tesseract_raw.page_iterator_bounding_box(iterator=iterator, level=level)
-        count += 1
-        imagedraw.line(coord, fill=10)
-        bbox.append(coord)
-    print count
-    inputImage.show()
+	    iterator = tesseract_raw.get_iterator(handle)
+	    #print iterator
 
-    # tesseract_raw.recognize(handle)
-    # print tesseract_raw.get_utf8_text(handle)
-    # print tesseract_raw.page_iterator_bounding_box(iterator=iterator, level=3)
-    # print tesseract_raw.page_iterator_is_at_beginning_of(iterator, 3)
-    # print tesseract_raw.page_iterator_next(iterator, 3)
-    # print tesseract_raw.page_iterator_is_at_beginning_of(iterator, 3)
-    # print tesseract_raw.page_iterator_bounding_box(iterator=iterator, level=3)
+	    
+	    count = 1
+	    imagedraw = ImageDraw.Draw(inputImage)
 
-    print "time used:", time.time() - t1
-    tesseract_raw.cleanup(handle)
+	    level = 4
+	    coord = tesseract_raw.page_iterator_bounding_box(iterator=iterator, level=level)[1]
+	    print tesseract_raw.page_iterator_bounding_box(iterator=iterator, level=level)
+	    imagedraw.line(coord, fill=10)
+	    while tesseract_raw.page_iterator_next(iterator, level=level):
+		coord = tesseract_raw.page_iterator_bounding_box(iterator=iterator, level=level)[1]
+		print tesseract_raw.page_iterator_bounding_box(iterator=iterator, level=level)
+		count += 1
+		imagedraw.line(coord, fill=10)
+		bbox.append(coord)
+	    print count
+	    #inputImage.show()
+
+	    # tesseract_raw.recognize(handle)
+	    # print tesseract_raw.get_utf8_text(handle)
+	    # print tesseract_raw.page_iterator_bounding_box(iterator=iterator, level=3)
+	    # print tesseract_raw.page_iterator_is_at_beginning_of(iterator, 3)
+	    # print tesseract_raw.page_iterator_next(iterator, 3)
+	    # print tesseract_raw.page_iterator_is_at_beginning_of(iterator, 3)
+	    # print tesseract_raw.page_iterator_bounding_box(iterator=iterator, level=3)
+
+	    print "time used:", time.time() - t1
+	    tesseract_raw.cleanup(handle)
+    except:
+    	    traceback.print_exc()
     return bbox
 
 if __name__ == '__main__':
