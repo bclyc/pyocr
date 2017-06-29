@@ -23,7 +23,7 @@ tf.app.flags.DEFINE_boolean('random_brightness', True, "whether to adjust bright
 tf.app.flags.DEFINE_boolean('random_contrast', True, "whether to random constrast")
 
 tf.app.flags.DEFINE_integer('charset_size', 3590, "Choose the first `charset_size` characters only.")
-tf.app.flags.DEFINE_integer('image_size', 64, "Needs to provide same value as in training.")
+tf.app.flags.DEFINE_integer('image_size', 32, "Needs to provide same value as in training.")
 tf.app.flags.DEFINE_boolean('gray', True, "whether to change the rbg to gray")
 tf.app.flags.DEFINE_integer('max_steps', 16002, 'the max training steps ')
 tf.app.flags.DEFINE_integer('eval_steps', 100, "the step num to eval")
@@ -45,7 +45,7 @@ FLAGS = tf.app.flags.FLAGS
 
 def build_graph(top_k):
     keep_prob = tf.placeholder(dtype=tf.float32, shape=[], name='keep_prob')
-    images = tf.placeholder(dtype=tf.float32, shape=[None, 64, 64, 1], name='image_batch')
+    images = tf.placeholder(dtype=tf.float32, shape=[None, FLAGS.image_size, FLAGS.image_size, 1], name='image_batch')
     labels = tf.placeholder(dtype=tf.int64, shape=[None], name='label_batch')
     is_training = tf.placeholder(dtype=tf.bool, shape=[], name='train_flag')
 
@@ -112,17 +112,17 @@ def labelToAscii(l):
 
 
 def initTF():
-	sess = tf.Session()
-	logger.info('========start inference============')
-	# images = tf.placeholder(dtype=tf.float32, shape=[None, 64, 64, 1])
-	# Pass a shadow label 0. This label will not affect the computation graph.
-	graph = build_graph(top_k=1)
-	saver = tf.train.Saver()
-	ckpt = tf.train.latest_checkpoint(FLAGS.checkpoint_dir)
-	if ckpt:
-	    saver.restore(sess, ckpt)
+    sess = tf.Session()
+    logger.info('========start inference============')
+    # images = tf.placeholder(dtype=tf.float32, shape=[None, FLAGS.image_size, FLAGS.image_size, 1])
+    # Pass a shadow label 0. This label will not affect the computation graph.
+    graph = build_graph(top_k=1)
+    saver = tf.train.Saver()
+    ckpt = tf.train.latest_checkpoint(FLAGS.checkpoint_dir)
+    if ckpt:
+        saver.restore(sess, ckpt)
 
-	return sess,graph
+    return sess,graph
 
 
 def recog(cropImage, sess, graph):
@@ -130,7 +130,7 @@ def recog(cropImage, sess, graph):
     #temp_image = Image.open(image).convert('L')
     temp_image = cropImage.resize((FLAGS.image_size, FLAGS.image_size), Image.ANTIALIAS)
     temp_image = np.asarray(temp_image) / 255.0
-    temp_image = temp_image.reshape([-1, 64, 64, 1])
+    temp_image = temp_image.reshape([-1, FLAGS.image_size, FLAGS.image_size, 1])
 
 
     t1 = time.time()
@@ -139,25 +139,49 @@ def recog(cropImage, sess, graph):
                                                      graph['keep_prob']: 1.0,
                                                      graph['is_training']: False})
     charuni=unichr(int(labelToAscii(predict_index[0][0])))
-    print "predict_val:",predict_val[0][0],"predict_index:",predict_index[0][0],"char:",charuni
+
+    #print "predict_val:",predict_val[0][0],"predict_index:",predict_index[0][0],"char:", charuni
     #print "used time:", time.time()-t1
     return predict_val, predict_index, charuni
 
 
 if __name__=='__main__':
-	sess, graph = initTF()
-	imageName=sys.argv[1]
-	temp_image = Image.open(imageName).convert('L')
-	bbox = getcharbox.getCharBox(imageName)
-	for box in bbox:
-		#box=bbox[2]
-		cropImage = temp_image.crop(box)
-		cropImage = cropImage.resize((64/cropImage.size[1]*cropImage.size[0], 64), Image.ANTIALIAS)
-		#backg = Image.new('L',(FLAGS.image_size,FLAGS.image_size),cropImage.getpixel((0,0)))
-		#backg.paste(cropImage,(FLAGS.image_size/2-cropImage.size[0]/2,5))
-		#backg = Image.open("/usr/workspace/LiuYongChao/pyocr/tests/charboxtest/testcrop2.jpg").convert('L')
-		#recog(backg, sess, graph)
-		cropImage.save('/usr/workspace/LiuYongChao/pyocr/tests/cropImage/'+str(box[0])+"-"+str(box[1])+".jpg")
-	
+    t1 = time.time()
+    sess, graph = initTF()
+    t2 = time.time()
+    print "Init TF time used:", t2 - t1
+    handle = getcharbox.initTess()
+    t3 = time.time()
+    print "Init Tess time used:", t3-t2
+    # charuni = unichr(24320)
+    # print "char:", charuni
+    imageName=sys.argv[1]
+    temp_image = Image.open(imageName).convert('L')
+
+
+    t4 = time.time()
+    print "load img time used:", t4 - t3
+
+    bbox = getcharbox.getCharBox(handle, imageName)
+    f = open("./text_output.txt","w")
+    lines = []
+    for box_index, box in enumerate(bbox):
+        #box=bbox[2]
+        tp=time.time()
+        cropImage = temp_image.crop(box)
+        #cropImage = cropImage.resize((FLAGS.image_size/cropImage.size[1]*cropImage.size[0], FLAGS.image_size), Image.ANTIALIAS)
+        #backg = Image.new('L',(FLAGS.image_size,FLAGS.image_size),cropImage.getpixel((0,0)))
+        #backg.paste(cropImage,(FLAGS.image_size/2-cropImage.size[0]/2,5))
+        #backg = Image.open("/usr/workspace/LiuYongChao/pyocr/tests/charboxtest/testcrop2.jpg").convert('L')
+        print "crop img time used:", time.time() - tp
+        print "box:", box_index
+        tp = time.time()
+        val, ind, char = recog(cropImage, sess, graph)
+        #lines.append("predict_val:"+str(val)+"predict_index:"+str(ind)+"char:"+char.encode("utf-8")+"\n")
+        lines.append(char.encode("utf-8")+" ")
+        #cropImage.save('/usr/workspace/LiuYongChao/pyocr/tests/cropImage/'+str(box[0])+"-"+str(box[1])+".jpg")
+        print "recog char time used:", time.time() - tp
+    f.writelines(lines)
+    print "recog time used:", time.time()-t4
 
 

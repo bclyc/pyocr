@@ -24,7 +24,7 @@ tf.app.flags.DEFINE_boolean('random_brightness', True, "whether to adjust bright
 tf.app.flags.DEFINE_boolean('random_contrast', True, "whether to random constrast")
 
 tf.app.flags.DEFINE_integer('charset_size', 3590, "Choose the first `charset_size` characters only.")
-tf.app.flags.DEFINE_integer('image_size', 64, "Needs to provide same value as in training.")
+tf.app.flags.DEFINE_integer('image_size', 32, "Needs to provide same value as in training.")
 tf.app.flags.DEFINE_boolean('gray', True, "whether to change the rbg to gray")
 tf.app.flags.DEFINE_integer('max_steps', 16002, 'the max training steps ')
 tf.app.flags.DEFINE_integer('eval_steps', 100, "the step num to eval")
@@ -89,7 +89,7 @@ class DataIterator:
 
 def build_graph(top_k):
     keep_prob = tf.placeholder(dtype=tf.float32, shape=[], name='keep_prob')
-    images = tf.placeholder(dtype=tf.float32, shape=[None, 64, 64, 1], name='image_batch')
+    images = tf.placeholder(dtype=tf.float32, shape=[None, FLAGS.image_size, FLAGS.image_size, 1], name='image_batch')
     labels = tf.placeholder(dtype=tf.int64, shape=[None], name='label_batch')
     is_training = tf.placeholder(dtype=tf.bool, shape=[], name='train_flag')
 
@@ -152,69 +152,69 @@ def train():
     test_feeder = DataIterator(data_dir='/data/train_test_data/test/')
     model_name = 'cnCharReg-model'
     with tf.Session(config=tf.ConfigProto(allow_soft_placement=True)) as sess:
-	with tf.device("/cpu:0"):
-		logger.info("trainsize:"+str(train_feeder.size)+",testsize:"+str(test_feeder.size))
-		train_images, train_labels = train_feeder.input_pipeline(batch_size=FLAGS.batch_size, aug=True)
-		test_images, test_labels = test_feeder.input_pipeline(batch_size=FLAGS.batch_size)
-		graph = build_graph(top_k=1)
-		saver = tf.train.Saver()
-		sess.run(tf.global_variables_initializer())
-		coord = tf.train.Coordinator()
-		threads = tf.train.start_queue_runners(sess=sess, coord=coord)
+        with tf.device("/cpu:0"):
+            logger.info("trainsize:"+str(train_feeder.size)+",testsize:"+str(test_feeder.size))
+            train_images, train_labels = train_feeder.input_pipeline(batch_size=FLAGS.batch_size, aug=True)
+            test_images, test_labels = test_feeder.input_pipeline(batch_size=FLAGS.batch_size)
+            graph = build_graph(top_k=1)
+            saver = tf.train.Saver()
+            sess.run(tf.global_variables_initializer())
+            coord = tf.train.Coordinator()
+            threads = tf.train.start_queue_runners(sess=sess, coord=coord)
 
-		train_writer = tf.summary.FileWriter(FLAGS.log_dir + '/train', sess.graph)
-		test_writer = tf.summary.FileWriter(FLAGS.log_dir + '/val')
-		start_step = 0
-		if FLAGS.restore:
-		    ckpt = tf.train.latest_checkpoint(FLAGS.checkpoint_dir)
-		    if ckpt:
-		        saver.restore(sess, ckpt)
-		        print("restore from the checkpoint {0}".format(ckpt))
-		        start_step += int(ckpt.split('-')[-1])
+            train_writer = tf.summary.FileWriter(FLAGS.log_dir + '/train', sess.graph)
+            test_writer = tf.summary.FileWriter(FLAGS.log_dir + '/val')
+            start_step = 0
+            if FLAGS.restore:
+                ckpt = tf.train.latest_checkpoint(FLAGS.checkpoint_dir)
+                if ckpt:
+                    saver.restore(sess, ckpt)
+                    print("restore from the checkpoint {0}".format(ckpt))
+                    start_step += int(ckpt.split('-')[-1])
 
-		logger.info(':::Training Start:::')
-		try:
-		    i = 0
-		    while not coord.should_stop():
-			i += 1
-		        start_time = time.time()
-		        train_images_batch, train_labels_batch = sess.run([train_images, train_labels])
-		        feed_dict = {graph['images']: train_images_batch,
-		                     graph['labels']: train_labels_batch,
-		                     graph['keep_prob']: 0.8,
-		                     graph['is_training']: True}
-		        _, loss_val, train_summary, step = sess.run(
-		            [graph['train_op'], graph['loss'], graph['merged_summary_op'], graph['global_step']],
-		            feed_dict=feed_dict)
-		        train_writer.add_summary(train_summary, step)
-		        end_time = time.time()
-		        logger.info("the step {0} takes {1} loss {2}".format(step, end_time - start_time, loss_val))
-			if step > FLAGS.max_steps:
-		            break
-		        if step % FLAGS.eval_steps == 1:
-		            test_images_batch, test_labels_batch = sess.run([test_images, test_labels])
-		            feed_dict = {graph['images']: test_images_batch,
-		                         graph['labels']: test_labels_batch,
-		                         graph['keep_prob']: 1.0,
-		                         graph['is_training']: False}
-		            accuracy_test, test_summary = sess.run([graph['accuracy'], graph['merged_summary_op']],
-		                                                   feed_dict=feed_dict)
-		            if step > 300:
-		                test_writer.add_summary(test_summary, step)
-		            logger.info('===============Eval a batch=======================')
-		            logger.info('the step {0} test accuracy: {1}'
-		                        .format(step, accuracy_test))
-		            logger.info('===============Eval a batch=======================')
-		        if step % FLAGS.save_steps == 1:
-		            logger.info('Save the ckpt of {0}'.format(step))
-		            saver.save(sess, os.path.join(FLAGS.checkpoint_dir, model_name),
-		                       global_step=graph['global_step'])
-		except tf.errors.OutOfRangeError:
-		    logger.info('==================Train Finished================')
-		    saver.save(sess, os.path.join(FLAGS.checkpoint_dir, model_name), global_step=graph['global_step'])
-		finally:
-		    coord.request_stop()
-		coord.join(threads)
+            logger.info(':::Training Start:::')
+            try:
+                i = 0
+                while not coord.should_stop():
+                    i += 1
+                    start_time = time.time()
+                    train_images_batch, train_labels_batch = sess.run([train_images, train_labels])
+                    feed_dict = {graph['images']: train_images_batch,
+                                 graph['labels']: train_labels_batch,
+                                 graph['keep_prob']: 0.8,
+                                 graph['is_training']: True}
+                    _, loss_val, train_summary, step = sess.run(
+                        [graph['train_op'], graph['loss'], graph['merged_summary_op'], graph['global_step']],
+                        feed_dict=feed_dict)
+                    train_writer.add_summary(train_summary, step)
+                    end_time = time.time()
+                    logger.info("the step {0} takes {1} loss {2}".format(step, end_time - start_time, loss_val))
+                    if step > FLAGS.max_steps:
+                            break
+                    if step % FLAGS.eval_steps == 1:
+                        test_images_batch, test_labels_batch = sess.run([test_images, test_labels])
+                        feed_dict = {graph['images']: test_images_batch,
+                                     graph['labels']: test_labels_batch,
+                                     graph['keep_prob']: 1.0,
+                                     graph['is_training']: False}
+                        accuracy_test, test_summary = sess.run([graph['accuracy'], graph['merged_summary_op']],
+                                                               feed_dict=feed_dict)
+                        if step > 300:
+                            test_writer.add_summary(test_summary, step)
+                        logger.info('===============Eval a batch=======================')
+                        logger.info('the step {0} test accuracy: {1}'
+                                    .format(step, accuracy_test))
+                        logger.info('===============Eval a batch=======================')
+                    if step % FLAGS.save_steps == 1:
+                        logger.info('Save the ckpt of {0}'.format(step))
+                        saver.save(sess, os.path.join(FLAGS.checkpoint_dir, model_name),
+                                   global_step=graph['global_step'])
+            except tf.errors.OutOfRangeError:
+                logger.info('==================Train Finished================')
+                saver.save(sess, os.path.join(FLAGS.checkpoint_dir, model_name), global_step=graph['global_step'])
+            finally:
+                coord.request_stop()
+            coord.join(threads)
 
 
 def validation():
@@ -283,10 +283,10 @@ def inference(image):
     temp_image = Image.open(image).convert('L')
     temp_image = temp_image.resize((FLAGS.image_size, FLAGS.image_size), Image.ANTIALIAS)
     temp_image = np.asarray(temp_image) / 255.0
-    temp_image = temp_image.reshape([-1, 64, 64, 1])
+    temp_image = temp_image.reshape([-1, FLAGS.image_size, FLAGS.image_size, 1])
     with tf.Session() as sess:
         logger.info('========start inference============')
-        # images = tf.placeholder(dtype=tf.float32, shape=[None, 64, 64, 1])
+        # images = tf.placeholder(dtype=tf.float32, shape=[None, FLAGS.image_size, FLAGS.image_size, 1])
         # Pass a shadow label 0. This label will not affect the computation graph.
         graph = build_graph(top_k=3)
         saver = tf.train.Saver()

@@ -132,8 +132,12 @@ class GetCharBox(BaseTestBox, BaseTesseract):
             os.remove(tmp_path)
 
 
-def getCharBox(imagePath):
+def initTess():
     handle = tesseract_raw.init(lang="chisim")
+    return handle
+
+def getCharBox(handle, imagePath):
+
     print tesseract_raw.is_available(), tesseract_raw.get_available_languages(handle)
     # t0 = time.time()
     # charBox = GetCharBox()
@@ -143,46 +147,74 @@ def getCharBox(imagePath):
     t1 = time.time()
     bbox=[]
     try:
-	    inputImage = Image.open(imagePath)
-	    tesseract_raw.set_page_seg_mode(handle=handle, mode=2)
-	    # tesseract_raw.set_is_numeric(handle=handle, mode=3)
-	    tesseract_raw.init_for_analyse_page(handle=handle)
-	    tesseract_raw.set_image(handle=handle, image=inputImage)
-	    tesseract_raw.analyse_layout(handle=handle)
+        inputImage = Image.open(imagePath)
+        tesseract_raw.set_page_seg_mode(handle=handle, mode=2)
+        # tesseract_raw.set_is_numeric(handle=handle, mode=3)
+        tesseract_raw.init_for_analyse_page(handle=handle)
+        tesseract_raw.set_image(handle=handle, image=inputImage)
+        tesseract_raw.analyse_layout(handle=handle)
 
-	    iterator = tesseract_raw.get_iterator(handle)
-	    #print iterator
+        iterator = tesseract_raw.get_iterator(handle)
+        #print iterator
 
-	    
-	    count = 1
-	    imagedraw = ImageDraw.Draw(inputImage)
 
-	    level = 4
-	    coord = tesseract_raw.page_iterator_bounding_box(iterator=iterator, level=level)[1]
-	    print tesseract_raw.page_iterator_bounding_box(iterator=iterator, level=level)
-	    imagedraw.line(coord, fill=10)
-	    while tesseract_raw.page_iterator_next(iterator, level=level):
-		coord = tesseract_raw.page_iterator_bounding_box(iterator=iterator, level=level)[1]
-		print tesseract_raw.page_iterator_bounding_box(iterator=iterator, level=level)
-		count += 1
-		imagedraw.line(coord, fill=10)
-		bbox.append(coord)
-	    print count
-	    #inputImage.show()
+        count = 0
+        imagedraw = ImageDraw.Draw(inputImage)
 
-	    # tesseract_raw.recognize(handle)
-	    # print tesseract_raw.get_utf8_text(handle)
-	    # print tesseract_raw.page_iterator_bounding_box(iterator=iterator, level=3)
-	    # print tesseract_raw.page_iterator_is_at_beginning_of(iterator, 3)
-	    # print tesseract_raw.page_iterator_next(iterator, 3)
-	    # print tesseract_raw.page_iterator_is_at_beginning_of(iterator, 3)
-	    # print tesseract_raw.page_iterator_bounding_box(iterator=iterator, level=3)
+        level = 4
+        hasNext = True
+        lx1, ly1, lx2, ly2 = [-1, -1, -1, -1]
+        lhwRate = -1.0
+        merged_num = 0
+        while hasNext:
+            coord = tesseract_raw.page_iterator_bounding_box(iterator=iterator, level=level)[1]
+            x1, y1, x2, y2 = coord
+            hwRate = (float(y2-y1)/(x2-x1) if x2!=x1 else 0)
+            print count, tesseract_raw.page_iterator_bounding_box(iterator=iterator, level=level), hwRate
 
-	    print "time used:", time.time() - t1
-	    tesseract_raw.cleanup(handle)
+
+            #merge semi-parts of a CHchar
+            if lx2>=x1 and lhwRate>1.2 and hwRate>1.2 and ly1<y2 and ly2>y1 and (lx2-x1)<(ly2-ly1):
+                bbox.pop()
+                count -= 1
+                x1 = (x1 if x1 < lx1 else lx1)
+                y1 = (y1 if y1 < ly1 else ly1)
+                x2 = (x2 if x2 > lx2 else lx2)
+                y2 = (y2 if y2 > ly2 else ly2)
+                hwRate = (float(y2 - y1) / (x2 - x1) if x2 != x1 else 0)
+                merged_num += 1
+                print "merged!"
+
+            lx1, ly1, lx2, ly2 = [x1,y1,x2,y2]
+            lhwRate = hwRate
+            bbox.append([x1,y1,x2,y2])
+            count += 1
+            hasNext = tesseract_raw.page_iterator_next(iterator, level=level)
+        print "count:", count, "merged:", merged_num
+
+        count = 0
+        for x1,y1,x2,y2 in bbox:
+            imagedraw.line((x1, y1, x1, y2), fill=(255, 0, 0), width=1)
+            imagedraw.line((x1, y1, x2, y1), fill=(255, 0, 0), width=1)
+            imagedraw.line((x1, y2, x2, y2), fill=(255, 0, 0), width=1)
+            imagedraw.line((x2, y1, x2, y2), fill=(255, 0, 0), width=1)
+            imagedraw.text((x1, y1), str(count), fill=(255,0,0))
+            count += 1
+        inputImage.show()
+
+        # tesseract_raw.recognize(handle)
+        # print tesseract_raw.get_utf8_text(handle)
+        # print tesseract_raw.page_iterator_bounding_box(iterator=iterator, level=3)
+        # print tesseract_raw.page_iterator_is_at_beginning_of(iterator, 3)
+        # print tesseract_raw.page_iterator_next(iterator, 3)
+        # print tesseract_raw.page_iterator_is_at_beginning_of(iterator, 3)
+        # print tesseract_raw.page_iterator_bounding_box(iterator=iterator, level=3)
+
+        print "get bbox time used:", time.time() - t1
+        tesseract_raw.cleanup(handle)
     except:
-    	    traceback.print_exc()
+            traceback.print_exc()
     return bbox
 
 if __name__ == '__main__':
-    getCharBox("/usr/workspace/pyocr/tests/charboxtest/test.jpg")
+    getCharBox("/usr/workspace/pyocr/tests/charboxtest/test6.jpg")

@@ -108,6 +108,7 @@ def asciiTolabel(l):
     return chardict[l]
 
 
+charsize = 32
 def printchars(chars, start, end):
     print 'fonts:', start, "-", end
     err_num = 0
@@ -117,18 +118,18 @@ def printchars(chars, start, end):
         #char = 20113
         print "process:", multiprocessing.current_process().name, " saving char:", char
 
-        rootPath = "/usr/workspace/LiuYongChao/linux_win_chfonts/"
+        rootPath = "/data/fonts_test/"
         for file in os.listdir(rootPath):
             if file is file:
                 try:
-                    ic = ImageChar(fontPath=rootPath + file, fontColor=(100, 211, 90), size=(64, 64), fontSize=48)
+                    ic = ImageChar(fontPath=rootPath + file, fontColor=(100, 211, 90), size=(charsize, charsize), fontSize=48)
                     ic.drawText((0, 0), unichr(char), ic.randRGB())
                     xmin = -1;
                     xmax = -1;
                     ymin = -1;
                     ymax = -1;
-                    for x in range(0,64):
-                        for y in range(0,64):
+                    for x in range(0,charsize):
+                        for y in range(0,charsize):
                             if ic.image.getpixel((x, y))[0] != 255:
                                 xmin = (x if xmin == -1 else xmin)
                                 ymin = (y if ymin == -1 else ymin)
@@ -138,7 +139,7 @@ def printchars(chars, start, end):
                                 ymax = (y if y > ymax else ymax)
 
                     if xmin!=-1 and xmax!=-1:
-                        ic.image = ic.image.crop((xmin,ymin,xmax+1,ymax+1)).resize((64,64), Image.ANTIALIAS)
+                        ic.image = ic.image.crop((xmin,ymin,xmax+1,ymax+1)).resize((charsize, charsize), Image.ANTIALIAS)
                         charlabel = asciiTolabel(char).zfill(4)
                         if not os.path.exists('/data/train_test_data/test/' + charlabel + '/'):
                             os.makedirs('/data/train_test_data/test/' + charlabel + '/')
