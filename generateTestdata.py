@@ -8,6 +8,8 @@ import logging
 import traceback
 import multiprocessing
 import time
+import numpy as np
+import copy
 
 
 class RandomChar():
@@ -77,6 +79,29 @@ class ImageChar():
         self.image.save(path)
 
 
+
+def randomGaussian(image, mean=0.2, sigma=0.3):
+
+    def gaussianNoisy(im, mean=0.2, sigma=0.3):
+
+        for _i in range(len(im)):
+            im[_i] += random.gauss(mean, sigma)
+        return im
+
+        # 将图像转化成数组
+
+    img = np.asarray(image)
+    img.flags.writeable = True  # 将数组改为读写模式
+    width, height = img.shape[:2]
+    img_r = gaussianNoisy(img[:, :, 0].flatten(), mean, sigma)
+    img_g = gaussianNoisy(img[:, :, 1].flatten(), mean, sigma)
+    img_b = gaussianNoisy(img[:, :, 2].flatten(), mean, sigma)
+    img[:, :, 0] = img_r.reshape([width, height])
+    img[:, :, 1] = img_g.reshape([width, height])
+    img[:, :, 2] = img_b.reshape([width, height])
+    return Image.fromarray(np.uint8(img))
+
+
 def getchars():
     file = open('/usr/workspace/LiuYongChao/chchars1.txt')
     fonts = []
@@ -122,7 +147,7 @@ def printchars(chars, start, end):
         for file in os.listdir(rootPath):
             if file is file:
                 try:
-                    ic = ImageChar(fontPath=rootPath + file, fontColor=(100, 211, 90), size=(charsize, charsize), fontSize=48)
+                    ic = ImageChar(fontPath=rootPath + file, fontColor=(100, 211, 90), size=(charsize, charsize), fontSize=24)
                     ic.drawText((0, 0), unichr(char), ic.randRGB())
                     xmin = -1;
                     xmax = -1;
@@ -139,12 +164,27 @@ def printchars(chars, start, end):
                                 ymax = (y if y > ymax else ymax)
 
                     if xmin!=-1 and xmax!=-1:
-                        ic.image = ic.image.crop((xmin,ymin,xmax+1,ymax+1)).resize((charsize, charsize), Image.ANTIALIAS)
+                        # ori
+                        oriImg = ic.image.crop((xmin,ymin,xmax+1,ymax+1)).resize((charsize, charsize), Image.ANTIALIAS)
+                        ic.image = oriImg
                         charlabel = asciiTolabel(char).zfill(4)
                         if not os.path.exists('/data/train_test_data/test/' + charlabel + '/'):
                             os.makedirs('/data/train_test_data/test/' + charlabel + '/')
                         path = '/data/train_test_data/test/' + charlabel + '/' + charlabel + '_' + file.replace(".", "_") + ".png"
                         ic.save(path)
+
+                        # +noise
+                        mean=0.2;sigma=0.3
+                        for i in range(4):
+                            tmp = Image.new('RGB', (oriImg.size[0], oriImg.size[1]), (255,255,255))
+                            tmp.paste(oriImg)
+                            ic.image = randomGaussian(tmp, mean, sigma)
+                            charlabel = asciiTolabel(char).zfill(4)
+                            if not os.path.exists('/data/train_test_data/test/' + charlabel + '/'):
+                                os.makedirs('/data/train_test_data/test/' + charlabel + '/')
+                            path = '/data/train_test_data/test/' + charlabel + '/' + charlabel + '_' + file.replace(".", "_")+str(mean)+str(sigma)+str(i)+ ".png"
+                            ic.save(path)
+
                     # print "save path:", path
                     # break
                 except Exception, e:
@@ -158,8 +198,8 @@ if __name__ == "__main__":
     chars = getchars()
 
     procs = []
-    for i in range(40):
-        p = multiprocessing.Process(target=printchars, args=(chars, int(i*3500/20), int((i+1)*3500/20)))
+    for i in range(48):
+        p = multiprocessing.Process(target=printchars, args=(chars, int(i*3500/48), int((i+1)*3500/48)))
         procs.append(p)
     # p1 = multiprocessing.Process(target=printchars, args=(chars, 0, 1))
     # p2 = multiprocessing.Process(target=printchars, args=(chars, 500, 1100))

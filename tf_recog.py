@@ -1,3 +1,4 @@
+# python tf_recog.py --mode=train --max_steps=16002 --save_steps=1000 2>&1 |tee log_train.out
 # top 1 accuracy 0.9249791286257038 top k accuracy 0.9747623788455786
 import os
 import random
@@ -40,7 +41,7 @@ tf.app.flags.DEFINE_boolean('epoch', 1, 'Number of epoches')
 tf.app.flags.DEFINE_boolean('batch_size', 256, 'Validation batch size')
 tf.app.flags.DEFINE_string('mode', 'validation', 'Running mode. One of {"train", "valid", "test"}')
 
-#gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.333)
+gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.333)
 FLAGS = tf.app.flags.FLAGS
 
 
@@ -120,7 +121,7 @@ def build_graph(top_k):
         loss = control_flow_ops.with_dependencies([updates], loss)
 
     global_step = tf.get_variable("step", [], initializer=tf.constant_initializer(0.0), trainable=False)
-    optimizer = tf.train.AdamOptimizer(learning_rate=0.1)	#learning rate
+    optimizer = tf.train.AdamOptimizer(learning_rate=0.05)	#learning rate
     train_op = slim.learning.create_train_op(loss, optimizer, global_step=global_step)
     probabilities = tf.nn.softmax(logits)
 
@@ -150,9 +151,9 @@ def train():
     print('Begin training')
     train_feeder = DataIterator(data_dir='/data/train_test_data/train/')
     test_feeder = DataIterator(data_dir='/data/train_test_data/test/')
-    model_name = 'cnCharReg-model'
+    model_name = 'cnCharReg-model32'
     with tf.Session(config=tf.ConfigProto(allow_soft_placement=True)) as sess:
-        with tf.device("/cpu:0"):
+        with tf.device("/gpu:0"):
             logger.info("trainsize:"+str(train_feeder.size)+",testsize:"+str(test_feeder.size))
             train_images, train_labels = train_feeder.input_pipeline(batch_size=FLAGS.batch_size, aug=True)
             test_images, test_labels = test_feeder.input_pipeline(batch_size=FLAGS.batch_size)

@@ -162,24 +162,29 @@ if __name__=='__main__':
     t4 = time.time()
     print "load img time used:", t4 - t3
 
+    val, ind, char = recog(temp_image, sess, graph)
+    print "single char test:", "val:", val[0], "char:", char.encode("utf-8")
+
     bbox = getcharbox.getCharBox(handle, imageName)
+    t4 = time.time()
     f = open("./text_output.txt","w")
     lines = []
     for box_index, box in enumerate(bbox):
         #box=bbox[2]
-        tp=time.time()
+
         cropImage = temp_image.crop(box)
         #cropImage = cropImage.resize((FLAGS.image_size/cropImage.size[1]*cropImage.size[0], FLAGS.image_size), Image.ANTIALIAS)
         #backg = Image.new('L',(FLAGS.image_size,FLAGS.image_size),cropImage.getpixel((0,0)))
         #backg.paste(cropImage,(FLAGS.image_size/2-cropImage.size[0]/2,5))
         #backg = Image.open("/usr/workspace/LiuYongChao/pyocr/tests/charboxtest/testcrop2.jpg").convert('L')
-        print "crop img time used:", time.time() - tp
+
         print "box:", box_index
         tp = time.time()
         val, ind, char = recog(cropImage, sess, graph)
         #lines.append("predict_val:"+str(val)+"predict_index:"+str(ind)+"char:"+char.encode("utf-8")+"\n")
         lines.append(char.encode("utf-8")+" ")
-        #cropImage.save('/usr/workspace/LiuYongChao/pyocr/tests/cropImage/'+str(box[0])+"-"+str(box[1])+".jpg")
+        cropImage.save('/usr/workspace/LiuYongChao/pyocr/tests/cropImage/'+str(box[0])+"-"+str(box[1])+".jpg")
+        print "val:", val[0], "char:", char.encode("utf-8")
         print "recog char time used:", time.time() - tp
     f.writelines(lines)
     print "recog time used:", time.time()-t4

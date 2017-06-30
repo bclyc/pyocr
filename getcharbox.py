@@ -161,7 +161,7 @@ def getCharBox(handle, imagePath):
         count = 0
         imagedraw = ImageDraw.Draw(inputImage)
 
-        level = 4
+        level = 3
         hasNext = True
         lx1, ly1, lx2, ly2 = [-1, -1, -1, -1]
         lhwRate = -1.0
@@ -217,4 +217,5 @@ def getCharBox(handle, imagePath):
     return bbox
 
 if __name__ == '__main__':
-    getCharBox("/usr/workspace/pyocr/tests/charboxtest/test6.jpg")
+
+    getCharBox(initTess(),"/usr/workspace/pyocr/tests/charboxtest/test.jpg")
