@@ -241,9 +241,9 @@ if __name__ == "__main__":
         print("child   p.name:" + p.name + "\tp.id" + str(p.pid))
 
     for p in procs:
-        p.start();
-    for p in procs:
-        p.join();
+        p.start()
+        p.join()
+
 
     tend = time.time()
     print "Finished! Time used:", tend - tstart

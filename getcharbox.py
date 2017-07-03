@@ -161,7 +161,7 @@ def getCharBox(handle, imagePath):
         count = 0
         imagedraw = ImageDraw.Draw(inputImage)
 
-        level = 3
+        level = 2
         hasNext = True
         lx1, ly1, lx2, ly2 = [-1, -1, -1, -1]
         lhwRate = -1.0
