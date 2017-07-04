@@ -112,7 +112,7 @@ def labelToAscii(l):
 
 
 def initTF():
-    sess = tf.Session()
+    sess = tf.Session(config=tf.ConfigProto(allow_soft_placement=True))
     logger.info('========start inference============')
     # images = tf.placeholder(dtype=tf.float32, shape=[None, FLAGS.image_size, FLAGS.image_size, 1])
     # Pass a shadow label 0. This label will not affect the computation graph.
@@ -149,14 +149,23 @@ if __name__=='__main__':
     t1 = time.time()
     sess, graph = initTF()
     t2 = time.time()
-    print "Init TF time used:", t2 - t1
+    print "Init TF time:", t2 - t1
 
     # charuni = unichr(24320)
     # print "char:", charuni
-    imageName=sys.argv[1]
+    if len(sys.argv)>1:
+        imageName=sys.argv[1]
+    else:
+        imageName="/usr/workspace/LiuYongChao/pyocr/tests/charboxtest/test.jpg"
     temp_image = Image.open(imageName).convert('L')
 
-    bbox = char_split.charSplit(imageName)
+    t0=time.time()
+    handle = char_split.initTess()
+    print "Tess init time:", time.time()-t0
+
+    t2 = time.time()
+    bbox, th5 = char_split.charSplit(imageName, handle)
+    th5_pil = Image.fromarray(np.array(th5))
     t3 = time.time()
     print "char split time used:", t3 - t2
 
@@ -171,7 +180,7 @@ if __name__=='__main__':
     for box_index, box in enumerate(bbox):
         #box=bbox[2]
 
-        cropImage = temp_image.crop(box)
+        cropImage = th5_pil.crop(box)
         #cropImage = cropImage.resize((FLAGS.image_size/cropImage.size[1]*cropImage.size[0], FLAGS.image_size), Image.ANTIALIAS)
         #backg = Image.new('L',(FLAGS.image_size,FLAGS.image_size),cropImage.getpixel((0,0)))
         #backg.paste(cropImage,(FLAGS.image_size/2-cropImage.size[0]/2,5))
@@ -182,11 +191,17 @@ if __name__=='__main__':
         val, ind, char = recog(cropImage, sess, graph)
         lines.append("predict_val:"+str(val)+"predict_index:"+str(ind)+"char:"+char.encode("utf-8")+"\n")
         #lines.append(char.encode("utf-8")+" ")
-        #cropImage.save('/usr/workspace/LiuYongChao/pyocr/tests/cropImage/'+str(box[0])+"-"+str(box[1])+".jpg")
+        cropImage.save('/usr/workspace/LiuYongChao/pyocr/tests/cropImage/'+str(box_index)+"_"+str(box[0])+"-"+str(box[1])+".jpg")
         print "val:", val[0], "char:", char.encode("utf-8")
         print "recog char time used:", time.time() - tp
     f.writelines(lines)
-    sess.close()
     print "recog total time used:", time.time()-t3
 
+    te = time.time()
+    char_split.closeTess(handle)
+    print "Tess close time:", time.time() - te
+
+    te = time.time()
+    sess.close()
+    print "TF close time:", time.time() - te
 

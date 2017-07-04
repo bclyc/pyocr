@@ -145,7 +145,7 @@ def printchars(chars, start, end):
         for file in os.listdir(rootPath):
             if file is file:
                 try:
-                    ic = ImageChar(fontPath=rootPath + file, fontColor=(100, 211, 90), size=(charsize, charsize), fontSize=48)
+                    ic = ImageChar(fontPath=rootPath + file, fontColor=(100, 211, 90), size=(charsize, charsize), fontSize=24)
                     ic.drawText((0, 0), unichr(char), ic.randRGB())
                     xmin = -1;
                     xmax = -1;

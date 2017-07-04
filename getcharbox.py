@@ -136,6 +136,12 @@ def initTess():
     handle = tesseract_raw.init(lang="chisim")
     return handle
 
+
+def closeTess(handle):
+    tesseract_raw.cleanup(handle)
+    pass
+
+
 def getCharBox(handle, imagePath):
 
     print tesseract_raw.is_available(), tesseract_raw.get_available_languages(handle)
@@ -211,7 +217,7 @@ def getCharBox(handle, imagePath):
         # print tesseract_raw.page_iterator_bounding_box(iterator=iterator, level=3)
 
         print "get bbox time used:", time.time() - t1
-        tesseract_raw.cleanup(handle)
+
     except:
             traceback.print_exc()
     return bbox
