@@ -186,6 +186,7 @@ if __name__=='__main__':
         print "val:", val[0], "char:", char.encode("utf-8")
         print "recog char time used:", time.time() - tp
     f.writelines(lines)
+    sess.close()
     print "recog total time used:", time.time()-t3
 
 
