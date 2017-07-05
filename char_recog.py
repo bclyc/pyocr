@@ -9,6 +9,8 @@ import pickle
 import sys
 from PIL import Image
 from tensorflow.python.ops import control_flow_ops
+import traceback
+import cv2
 import char_split
 
 logger = logging.getLogger('char recognition')
@@ -146,56 +148,100 @@ def recog(cropImage, sess, graph):
 
 
 if __name__=='__main__':
+    #Init TF
     t1 = time.time()
     sess, graph = initTF()
     t2 = time.time()
     print "Init TF time:", t2 - t1
 
-    # charuni = unichr(24320)
-    # print "char:", charuni
-    if len(sys.argv)>1:
-        imageName=sys.argv[1]
-    else:
-        imageName="/usr/workspace/LiuYongChao/pyocr/tests/charboxtest/test.jpg"
-    temp_image = Image.open(imageName).convert('L')
-
-    t0=time.time()
+    #Init Tess
+    t0 = time.time()
     handle = char_split.initTess()
-    print "Tess init time:", time.time()-t0
+    print "Tess init time:", time.time() - t0
 
-    t2 = time.time()
-    bbox, th5 = char_split.charSplit(imageName, handle)
-    th5_pil = Image.fromarray(np.array(th5))
-    t3 = time.time()
-    print "char split time used:", t3 - t2
+    imageNames=[]
 
+    if len(sys.argv)>1:
+        imageNames.append(sys.argv[1])
+    else:
+        imageNames.append("/usr/workspace/LiuYongChao/pyocr/tests/charboxtest/test12.jpg")
+        imageNames.append("/usr/workspace/LiuYongChao/pyocr/tests/charboxtest/test11.jpg")
+        imageNames.append("/usr/workspace/LiuYongChao/pyocr/tests/charboxtest/test13.jpg")
+        imageNames.append("/usr/workspace/LiuYongChao/pyocr/tests/charboxtest/test.jpg")
+        imageNames.append("/usr/workspace/LiuYongChao/pyocr/tests/charboxtest/test4.jpg")
+        imageNames.append("/usr/workspace/LiuYongChao/pyocr/tests/charboxtest/test3.jpg")
 
-    # val, ind, char = recog(temp_image, sess, graph)
-    # print "single char test:", "val:", val[0], "char:", char.encode("utf-8")
-    #
-    # bbox = getcharbox.getCharBox(handle, imageName)
-    # t4 = time.time()
-    f = open("./text_output.txt","w")
     lines = []
-    for box_index, box in enumerate(bbox):
-        #box=bbox[2]
+    for img_ind, imageName in enumerate(imageNames):
+        try:
+            print "==================recog image:", imageName
+            t0 = time.time()
+            img_cv = cv2.imread(imageName)
+            print "Width Height", img_cv.shape
+            t2 = time.time()
+            print "***cv read img time used:", t2 - t0
 
-        cropImage = th5_pil.crop(box)
-        #cropImage = cropImage.resize((FLAGS.image_size/cropImage.size[1]*cropImage.size[0], FLAGS.image_size), Image.ANTIALIAS)
-        #backg = Image.new('L',(FLAGS.image_size,FLAGS.image_size),cropImage.getpixel((0,0)))
-        #backg.paste(cropImage,(FLAGS.image_size/2-cropImage.size[0]/2,5))
-        #backg = Image.open("/usr/workspace/LiuYongChao/pyocr/tests/charboxtest/testcrop2.jpg").convert('L')
+            bbox, th5 = char_split.charSplit(img_cv, handle)
+            th5_pil = Image.fromarray(np.array(th5))
+            t3 = time.time()
+            print "***line + char split total time used:", t3 - t2
 
-        print "box:", box_index
-        tp = time.time()
-        val, ind, char = recog(cropImage, sess, graph)
-        lines.append("predict_val:"+str(val)+"predict_index:"+str(ind)+"char:"+char.encode("utf-8")+"\n")
-        #lines.append(char.encode("utf-8")+" ")
-        cropImage.save('/usr/workspace/LiuYongChao/pyocr/tests/cropImage/'+str(box_index)+"_"+str(box[0])+"-"+str(box[1])+".jpg")
-        print "val:", val[0], "char:", char.encode("utf-8")
-        print "recog char time used:", time.time() - tp
+            image_tensor = ()
+            for box_index, box in enumerate(bbox):
+
+                cropImage = th5_pil.crop(box)
+
+                # print "box:", box_index
+                # tp = time.time()
+                # val, ind, char = recog(cropImage, sess, graph)
+                # lines.append("predict_val:"+str(val)+"predict_index:"+str(ind)+"char:"+char.encode("utf-8")+"\n")
+                # lines.append(char.encode("utf-8")+" ")
+                # cropImage.save('/usr/workspace/LiuYongChao/pyocr/tests/cropImage/'+str(box_index)+"_"+str(box[0])+"-"+str(box[1])+".jpg")
+                #
+                #
+                #
+                # print "val:", val[0], "char:", char.encode("utf-8")
+                # print "recog char time used:", time.time() - tp
+
+                temp_image = cropImage.resize((FLAGS.image_size, FLAGS.image_size), Image.ANTIALIAS)
+                temp_image = np.asarray(temp_image) / 255.0
+                if image_tensor!=():
+                    image_tensor = np.row_stack((image_tensor, temp_image))
+                else:
+                    image_tensor = temp_image
+
+            # image_tensor = np.row_stack((image_tensor, image_tensor))
+            # image_tensor = np.row_stack((image_tensor, image_tensor))
+            # image_tensor = np.row_stack((image_tensor, image_tensor))
+            # image_tensor = np.row_stack((image_tensor, image_tensor))
+            # image_tensor = np.row_stack((image_tensor, image_tensor))
+            # image_tensor = np.row_stack((image_tensor, image_tensor))
+
+            image_tensor = image_tensor.reshape([-1, FLAGS.image_size, FLAGS.image_size, 1])
+
+            t1 = time.time()
+            predict_val, predict_index = sess.run([graph['predicted_val_top_k'], graph['predicted_index_top_k']],
+                                                  feed_dict={graph['images']: image_tensor,
+                                                             graph['keep_prob']: 1.0,
+                                                             graph['is_training']: False})
+
+            print "char num:", image_tensor.shape[0]
+            print "***tensor recog time:", time.time() - t1
+            print "*****pic total time:", time.time() - t0
+
+            #ouput chars to txt
+            lines.append("============recog image:" + imageName +"\n")
+            for i in range(len(predict_val)):
+                charuni = unichr(int(labelToAscii(predict_index[i][0])))
+                lines.append("box"+str(i)+" predict_val:" + str(predict_val[i][0]) + ", char:" + charuni.encode("utf-8") + "\n")
+
+        except:
+            traceback.print_exc()
+
+    f = open("./test_charOutput.txt", "w")
     f.writelines(lines)
-    print "recog total time used:", time.time()-t3
+
+    print "============End"
 
     te = time.time()
     char_split.closeTess(handle)

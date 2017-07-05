@@ -10,6 +10,7 @@ import multiprocessing
 import time
 import numpy as np
 import random
+import cv2
 
 class RandomChar():
     @staticmethod
@@ -138,29 +139,37 @@ def printchars(chars, start, end):
 
     for char in chars[start:end]:
 
-        #char = 20113
+        # char = 57
         print "process:", multiprocessing.current_process().name, " saving char:", char
 
-        rootPath = "/data/fonts_test/"
+        rootPath = "/data/fonts_train/"
         for file in os.listdir(rootPath):
             if file is file:
                 try:
                     ic = ImageChar(fontPath=rootPath + file, fontColor=(100, 211, 90), size=(charsize, charsize), fontSize=24)
                     ic.drawText((0, 0), unichr(char), ic.randRGB())
+                    tmp = Image.new('RGB', (ic.image.size[0], ic.image.size[1]), (255, 255, 255))
+                    tmp.paste(ic.image)
+                    cvImg = np.asarray(tmp)
+
+                    GrayImage = cv2.cvtColor(cvImg, cv2.COLOR_BGR2GRAY)
+                    ret, biImg = cv2.threshold(GrayImage, 127, 255, cv2.THRESH_BINARY)
+
+
                     xmin = -1;
                     xmax = -1;
                     ymin = -1;
                     ymax = -1;
                     for x in range(0,charsize):
                         for y in range(0,charsize):
-                            if ic.image.getpixel((x, y))[0] != 255:
+                            if biImg[y, x] != 255:
                                 xmin = (x if xmin == -1 else xmin)
                                 break
                         if xmin!=-1:
                             break
                     for x in reversed(range(0, charsize)):
                         for y in range(0, charsize):
-                            if ic.image.getpixel((x, y))[0] != 255:
+                            if biImg[y, x] != 255:
                                 xmax = (x if xmax == -1 else xmax)
                                 break
                         if xmax != -1:
@@ -168,7 +177,7 @@ def printchars(chars, start, end):
 
                     for y in range(0, charsize):
                         for x in range(0, charsize):
-                            if ic.image.getpixel((x, y))[0] != 255:
+                            if biImg[y, x] != 255:
                                 ymin = (y if ymin == -1 else ymin)
                                 break
                         if ymin != -1:
@@ -176,7 +185,7 @@ def printchars(chars, start, end):
 
                     for y in reversed(range(0, charsize)):
                         for x in range(0, charsize):
-                            if ic.image.getpixel((x, y))[0] != 255:
+                            if biImg[y, x] != 255:
                                 ymax = (y if ymax == -1 else ymax)
                                 break
                         if ymax != -1:
@@ -189,9 +198,9 @@ def printchars(chars, start, end):
                                                                                         Image.ANTIALIAS)
                         ic.image = oriImg
                         charlabel = asciiTolabel(char).zfill(4)
-                        if not os.path.exists('/data/train_test_data/test/' + charlabel + '/'):
-                            os.makedirs('/data/train_test_data/test/' + charlabel + '/')
-                        path = '/data/train_test_data/test/' + charlabel + '/' + charlabel + '_' + file.replace(".",
+                        if not os.path.exists('/data/train_test_data/train/' + charlabel + '/'):
+                            os.makedirs('/data/train_test_data/train/' + charlabel + '/')
+                        path = '/data/train_test_data/train/' + charlabel + '/' + charlabel + '_' + file.replace(".",
                                                                                                                 "_") + ".png"
                         ic.save(path)
 
@@ -203,9 +212,9 @@ def printchars(chars, start, end):
                             tmp.paste(oriImg)
                             ic.image = randomGaussian(tmp, mean, sigma)
                             charlabel = asciiTolabel(char).zfill(4)
-                            if not os.path.exists('/data/train_test_data/test/' + charlabel + '/'):
-                                os.makedirs('/data/train_test_data/test/' + charlabel + '/')
-                            path = '/data/train_test_data/test/' + charlabel + '/' + charlabel + '_' + file.replace(".",
+                            if not os.path.exists('/data/train_test_data/train/' + charlabel + '/'):
+                                os.makedirs('/data/train_test_data/train/' + charlabel + '/')
+                            path = '/data/train_test_data/train/' + charlabel + '/' + charlabel + '_' + file.replace(".",
                                                                                                                     "_") + str(
                                 mean) + str(sigma) + str(i) + ".png"
                             ic.save(path)

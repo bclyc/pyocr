@@ -79,13 +79,13 @@ def getTiderBox(img, x1,y1,x2,y2):
     return x1, ymin, x2, ymax+1
 
 
-def charSplit(imageName, handle):
+def charSplit(img, handle):
     t1 = time.time()
 
-    bbox = getcharbox.getCharBox(handle, imageName)
+    bbox = getcharbox.getCharBox(handle, img)
 
     t2 = time.time()
-    img = cv2.imread(imageName)
+
     GrayImage = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
     # #cv2.namedWindow("GrayImage")
@@ -117,10 +117,6 @@ def charSplit(imageName, handle):
         else:
             cropImg = th5[y1:y2, x1:x2]
 
-            # create projection dense pic
-            # paintx = np.zeros(cropImg.shape, np.uint8)
-            # cv2.cv.Zero(cv2.cv.fromarray(paintx))
-            # w = [0] * cropImg.shape[1]
             t5 = time.time()
 
             tmp = cropImg.copy()
@@ -129,7 +125,6 @@ def charSplit(imageName, handle):
 
             img_mat = mat(tmp)
             w = np.asarray(img_mat.sum(axis=0)/255)[0]
-
 
             # for x in range(cropImg.shape[1]):
             #     for y in range(cropImg.shape[0]):
@@ -190,11 +185,11 @@ def charSplit(imageName, handle):
             # cv2.waitKey(0)
             # break
             t8 = time.time()
-            print "char split multi time:",  t6 - t5, t7 - t6, t8 - t7
-    print "line bbox time:", t2 - t1
-    print "char split read img time:", t3 - t2
+            #print "char split single line time:",  t8 - t7
+    t9 = time.time()
 
-    print "char split time:", time.time()-t1
+    print "char split time:", t9 - t4
+    #print "char split + line split time:", time.time()-t1
     return charbox_rs, th5
 
 

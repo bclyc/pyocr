@@ -10,6 +10,7 @@ from src.pyocr import builders
 from src.pyocr import tesseract
 from src.pyocr.libtesseract import tesseract_raw
 from PIL import Image, ImageDraw
+import cv2
 
 filepath = os.path.split(os.path.realpath(__file__))[0]
 #print "filepath:", filepath
@@ -134,6 +135,10 @@ class GetCharBox(BaseTestBox, BaseTesseract):
 
 def initTess():
     handle = tesseract_raw.init(lang="chisim")
+    tesseract_raw.set_page_seg_mode(handle=handle, mode=2)
+    # tesseract_raw.set_is_numeric(handle=handle, mode=3)
+    tesseract_raw.init_for_analyse_page(handle=handle)
+
     return handle
 
 
@@ -142,31 +147,32 @@ def closeTess(handle):
     pass
 
 
-def getCharBox(handle, imagePath):
+def getCharBox(handle, img):
 
     print tesseract_raw.is_available(), tesseract_raw.get_available_languages(handle)
-    # t0 = time.time()
-    # charBox = GetCharBox()
-    # charBox.set_builder()
-    # charBox.test_write_read()
-    # print "timecost:", time.time() - t0
-    t1 = time.time()
-    bbox=[]
+
+    t0 = time.time()
+
+
     try:
-        inputImage = Image.open(imagePath)
-        tesseract_raw.set_page_seg_mode(handle=handle, mode=2)
-        # tesseract_raw.set_is_numeric(handle=handle, mode=3)
-        tesseract_raw.init_for_analyse_page(handle=handle)
+        t1=time.time()
+
+        inputImage = img    # cv2 img
+        inputImage = Image.fromarray(inputImage)
+
         tesseract_raw.set_image(handle=handle, image=inputImage)
+        t11 = time.time()
+
         tesseract_raw.analyse_layout(handle=handle)
 
+        t2 = time.time()
+
+
+
         iterator = tesseract_raw.get_iterator(handle)
-        #print iterator
 
-
+        bbox=[]
         count = 0
-        imagedraw = ImageDraw.Draw(inputImage)
-
         level = 2
         hasNext = True
         lx1, ly1, lx2, ly2 = [-1, -1, -1, -1]
@@ -176,7 +182,7 @@ def getCharBox(handle, imagePath):
             coord = tesseract_raw.page_iterator_bounding_box(iterator=iterator, level=level)[1]
             x1, y1, x2, y2 = coord
             hwRate = (float(y2-y1)/(x2-x1) if x2!=x1 else 0)
-            print count, tesseract_raw.page_iterator_bounding_box(iterator=iterator, level=level), hwRate
+            #print count, tesseract_raw.page_iterator_bounding_box(iterator=iterator, level=level), hwRate
 
 
             #merge semi-parts of a CHchar
@@ -196,17 +202,21 @@ def getCharBox(handle, imagePath):
             bbox.append([x1,y1,x2,y2])
             count += 1
             hasNext = tesseract_raw.page_iterator_next(iterator, level=level)
-        print "count:", count, "merged:", merged_num
 
-        count = 0
-        for x1,y1,x2,y2 in bbox:
-            imagedraw.line((x1, y1, x1, y2), fill=(255, 0, 0), width=1)
-            imagedraw.line((x1, y1, x2, y1), fill=(255, 0, 0), width=1)
-            imagedraw.line((x1, y2, x2, y2), fill=(255, 0, 0), width=1)
-            imagedraw.line((x2, y1, x2, y2), fill=(255, 0, 0), width=1)
-            imagedraw.text((x1, y1), str(count), fill=(255,0,0))
-            count += 1
-        inputImage.show()
+
+        t3 = time.time()
+
+        #show result
+        # imagedraw = ImageDraw.Draw(inputImage)
+        # count = 0
+        # for x1,y1,x2,y2 in bbox:
+        #     imagedraw.line((x1, y1, x1, y2), fill=(255, 0, 0), width=1)
+        #     imagedraw.line((x1, y1, x2, y1), fill=(255, 0, 0), width=1)
+        #     imagedraw.line((x1, y2, x2, y2), fill=(255, 0, 0), width=1)
+        #     imagedraw.line((x2, y1, x2, y2), fill=(255, 0, 0), width=1)
+        #     imagedraw.text((x1, y1), str(count), fill=(255,0,0))
+        #     count += 1
+        # inputImage.show()
 
         # tesseract_raw.recognize(handle)
         # print tesseract_raw.get_utf8_text(handle)
@@ -216,12 +226,31 @@ def getCharBox(handle, imagePath):
         # print tesseract_raw.page_iterator_is_at_beginning_of(iterator, 3)
         # print tesseract_raw.page_iterator_bounding_box(iterator=iterator, level=3)
 
-        print "get bbox time used:", time.time() - t1
+
+
+        print "line count:", count, "merged:", merged_num
+        print "img open time:", t11 - t1, "page analyse time:", t2 - t11
 
     except:
-            traceback.print_exc()
+        traceback.print_exc()
+
+    print "split line total time used:", time.time() - t0
+
     return bbox
 
-if __name__ == '__main__':
 
-    getCharBox(initTess(),"/usr/workspace/pyocr/tests/charboxtest/test.jpg")
+if __name__ == '__main__':
+    imagePaths=["/usr/workspace/pyocr/tests/charboxtest/test.jpg",
+                "/usr/workspace/pyocr/tests/charboxtest/test.jpg",
+                "/usr/workspace/pyocr/tests/charboxtest/test.jpg",
+                "/usr/workspace/pyocr/tests/charboxtest/test.jpg",
+                "/usr/workspace/pyocr/tests/charboxtest/test.jpg"]
+    # imagePaths = ["/usr/workspace/LiuYongChao/pyocr/tests/charboxtest/test.jpg",
+    #               "/usr/workspace/LiuYongChao/pyocr/tests/charboxtest/test.jpg",
+    #               "/usr/workspace/LiuYongChao/pyocr/tests/charboxtest/test.jpg",
+    #               "/usr/workspace/LiuYongChao/pyocr/tests/charboxtest/test3.jpg",
+    #               "/usr/workspace/LiuYongChao/pyocr/tests/charboxtest/test3.jpg"]
+
+    handle = initTess()
+    getCharBox(handle,imagePaths)
+    closeTess(handle)
