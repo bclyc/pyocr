@@ -164,11 +164,13 @@ if __name__=='__main__':
     if len(sys.argv)>1:
         imageNames.append(sys.argv[1])
     else:
+        imageNames.append("/usr/workspace/LiuYongChao/pyocr/tests/charboxtest/test.jpg")
         imageNames.append("/usr/workspace/LiuYongChao/pyocr/tests/charboxtest/test12.jpg")
         imageNames.append("/usr/workspace/LiuYongChao/pyocr/tests/charboxtest/test11.jpg")
         imageNames.append("/usr/workspace/LiuYongChao/pyocr/tests/charboxtest/test13.jpg")
         imageNames.append("/usr/workspace/LiuYongChao/pyocr/tests/charboxtest/test.jpg")
         imageNames.append("/usr/workspace/LiuYongChao/pyocr/tests/charboxtest/test4.jpg")
+        imageNames.append("/usr/workspace/LiuYongChao/pyocr/tests/charboxtest/test12.jpg")
         imageNames.append("/usr/workspace/LiuYongChao/pyocr/tests/charboxtest/test3.jpg")
 
     lines = []
@@ -233,7 +235,7 @@ if __name__=='__main__':
             lines.append("============recog image:" + imageName +"\n")
             for i in range(len(predict_val)):
                 charuni = unichr(int(labelToAscii(predict_index[i][0])))
-                lines.append("box"+str(i)+" predict_val:" + str(predict_val[i][0]) + ", char:" + charuni.encode("utf-8") + "\n")
+                lines.append("box"+str(i)+" predict_val+char: " + str(predict_val[i][0])[0:5] + " " + charuni.encode("utf-8") + "\n")
 
         except:
             traceback.print_exc()

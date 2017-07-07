@@ -191,7 +191,6 @@ def printchars(chars, start, end):
                         if ymax != -1:
                             break
 
-
                     if xmin!=-1 and xmax!=-1:
                         # ori
                         oriImg = ic.image.crop((xmin, ymin, xmax + 1, ymax + 1)).resize((charsize, charsize),

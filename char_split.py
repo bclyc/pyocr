@@ -194,11 +194,12 @@ def charSplit(img, handle):
 
 
 if __name__ == '__main__':
-    imageName = "/usr/workspace/pyocr/tests/charboxtest/test13.jpg"
+    imageName = "/usr/workspace/pyocr/tests/charboxtest/test12.jpg"
     t0=time.time()
     handle = getcharbox.initTess()
     print "Tess init time:", time.time()-t0
-    charbox_rs, th5 = charSplit(imageName, handle)
+    img = cv2.imread(imageName)
+    charbox_rs, th5 = charSplit(img, handle)
 
     pil = Image.fromarray(np.array(th5))
     inputImage = Image.open(imageName)
@@ -210,11 +211,12 @@ if __name__ == '__main__':
         imagedraw.line((x1, y1, x2, y1), fill=(255, 0, 0), width=1)
         imagedraw.line((x1, y2, x2, y2), fill=(255, 0, 0), width=1)
         imagedraw.line((x2, y1, x2, y2), fill=(255, 0, 0), width=1)
-        imagedraw.text((x1, y1), str(count), fill=(255, 0, 0))
+        #imagedraw.text((x1, y1), str(count), fill=(255, 0, 0))
         count += 1
 
     #inputImage = inputImage.resize((1024, int(float(1024)/inputImage.size[0]*inputImage.size[1])))
     pil.show()
+    inputImage.show()
 
     t1 = time.time()
     getcharbox.closeTess(handle)
