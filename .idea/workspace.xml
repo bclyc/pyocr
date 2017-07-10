@@ -2,10 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f32490ad-2b69-4506-b68b-e77a9c1fb10b" name="Default" comment="">
+      <change type="DELETED" beforePath="$PROJECT_DIR$/test.xml" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/char_recog.py" afterPath="$PROJECT_DIR$/char_recog.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/char_split.py" afterPath="$PROJECT_DIR$/char_split.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/generateElsedata.py" afterPath="$PROJECT_DIR$/generateElsedata.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/generateCHdata.py" afterPath="$PROJECT_DIR$/generateCHdata.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/make_voc_data.py" afterPath="$PROJECT_DIR$/make_voc_data.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -20,8 +20,8 @@
       <file leaf-file-name="char_split.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/char_split.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="30">
-              <caret line="192" column="26" lean-forward="false" selection-start-line="192" selection-start-column="23" selection-end-line="192" selection-end-column="26" />
+            <state relative-caret-position="320">
+              <caret line="184" column="20" lean-forward="false" selection-start-line="184" selection-start-column="18" selection-end-line="184" selection-end-column="20" />
               <folding>
                 <element signature="e#21#30#0" expanded="true" />
               </folding>
@@ -32,8 +32,8 @@
       <file leaf-file-name="char_recog.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/char_recog.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1066">
-              <caret line="194" column="0" lean-forward="true" selection-start-line="194" selection-start-column="0" selection-end-line="194" selection-end-column="0" />
+            <state relative-caret-position="320">
+              <caret line="200" column="40" lean-forward="false" selection-start-line="200" selection-start-column="40" selection-end-line="200" selection-end-column="40" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
               </folding>
@@ -44,9 +44,23 @@
       <file leaf-file-name="make_voc_data.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/make_voc_data.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="462">
-              <caret line="104" column="55" lean-forward="false" selection-start-line="104" selection-start-column="55" selection-end-line="104" selection-end-column="55" />
-              <folding />
+            <state relative-caret-position="280">
+              <caret line="125" column="119" lean-forward="false" selection-start-line="125" selection-start-column="114" selection-end-line="125" selection-end-column="119" />
+              <folding>
+                <element signature="e#22#58#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="generateVocdata.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/generateVocdata.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="330">
+              <caret line="246" column="12" lean-forward="false" selection-start-line="246" selection-start-column="12" selection-end-line="246" selection-end-column="12" />
+              <folding>
+                <element signature="e#21#64#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -54,8 +68,8 @@
       <file leaf-file-name="getcharbox.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/getcharbox.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="4480">
-              <caret line="236" column="17" lean-forward="false" selection-start-line="236" selection-start-column="17" selection-end-line="236" selection-end-column="17" />
+            <state relative-caret-position="506">
+              <caret line="242" column="23" lean-forward="false" selection-start-line="242" selection-start-column="23" selection-end-line="242" selection-end-column="23" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
               </folding>
@@ -66,8 +80,8 @@
       <file leaf-file-name="tf_recog.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tf_recog.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="495">
-              <caret line="137" column="39" lean-forward="true" selection-start-line="137" selection-start-column="39" selection-end-line="137" selection-end-column="39" />
+            <state relative-caret-position="515">
+              <caret line="54" column="76" lean-forward="false" selection-start-line="54" selection-start-column="67" selection-end-line="54" selection-end-column="76" />
               <folding>
                 <element signature="e#164#173#0" expanded="true" />
               </folding>
@@ -78,8 +92,8 @@
       <file leaf-file-name="generateCHdata.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/generateCHdata.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="4420">
-              <caret line="231" column="79" lean-forward="false" selection-start-line="231" selection-start-column="79" selection-end-line="231" selection-end-column="79" />
+            <state relative-caret-position="510">
+              <caret line="245" column="17" lean-forward="false" selection-start-line="245" selection-start-column="17" selection-end-line="245" selection-end-column="17" />
               <folding>
                 <element signature="e#21#64#0" expanded="true" />
               </folding>
@@ -90,8 +104,8 @@
       <file leaf-file-name="generateTestdata.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/generateTestdata.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3280">
-              <caret line="174" column="0" lean-forward="false" selection-start-line="174" selection-start-column="0" selection-end-line="174" selection-end-column="0" />
+            <state relative-caret-position="772">
+              <caret line="224" column="0" lean-forward="true" selection-start-line="195" selection-start-column="0" selection-end-line="224" selection-end-column="0" />
               <folding>
                 <element signature="e#21#64#0" expanded="true" />
               </folding>
@@ -102,10 +116,22 @@
       <file leaf-file-name="generateElsedata.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/generateElsedata.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="446">
-              <caret line="192" column="0" lean-forward="true" selection-start-line="192" selection-start-column="0" selection-end-line="192" selection-end-column="0" />
+            <state relative-caret-position="450">
+              <caret line="249" column="4" lean-forward="true" selection-start-line="249" selection-start-column="4" selection-end-line="252" selection-end-column="17" />
               <folding>
                 <element signature="e#21#64#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="mulproctest.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/mulproctest.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="120">
+              <caret line="6" column="0" lean-forward="false" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
+              <folding>
+                <element signature="e#0#22#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -115,20 +141,10 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>open</find>
-      <find>image_size</find>
-      <find>sys.argv</find>
-      <find>argv</find>
-      <find>64</find>
-      <find>convert</find>
-      <find>append</find>
-      <find>show</find>
-      <find>fonts</find>
       <find>gpu</find>
       <find>asciiTolabel</find>
       <find>gpu_options</find>
       <find>resi</find>
-      <find>re</find>
       <find>time.t</find>
       <find>paintx</find>
       <find>w[</find>
@@ -145,7 +161,20 @@
       <find>cpu</find>
       <find>lines</find>
       <find>rate</find>
+      <find>counter</find>
+      <find>walk</find>
+      <find>re</find>
+      <find>rename</find>
+      <find>w</find>
+      <find>wr</find>
+      <find>write</find>
+      <find>writel</find>
+      <find>o</find>
+      <find>open</find>
     </findStrings>
+    <dirStrings>
+      <dir>$PROJECT_DIR$</dir>
+    </dirStrings>
   </component>
   <component name="Git.Settings">
     <option name="PREVIOUS_COMMIT_AUTHORS">
@@ -167,7 +196,6 @@
         <option value="$PROJECT_DIR$/chchar.py" />
         <option value="$PROJECT_DIR$/MSER.py" />
         <option value="$PROJECT_DIR$/generateTestdata.py" />
-        <option value="$PROJECT_DIR$/generateCHdata.py" />
         <option value="$PROJECT_DIR$/src/__init__.py" />
         <option value="$PROJECT_DIR$/getcharbox.py" />
         <option value="$PROJECT_DIR$/tf_recog.py" />
@@ -175,6 +203,9 @@
         <option value="$PROJECT_DIR$/char_recog.py" />
         <option value="$PROJECT_DIR$/char_split.py" />
         <option value="$PROJECT_DIR$/make_voc_data.py" />
+        <option value="$PROJECT_DIR$/mulproctest.py" />
+        <option value="$PROJECT_DIR$/generateCHdata.py" />
+        <option value="$PROJECT_DIR$/generateVocdata.py" />
       </list>
     </option>
   </component>
@@ -235,7 +266,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../models" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="File.Encoding" />
   </component>
   <component name="PyConsoleOptionsProvider">
@@ -263,7 +294,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.make_voc_data">
+  <component name="RunManager" selected="Python.mulproctest">
     <configuration default="false" name="getcharbox" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -318,24 +349,6 @@
       <option name="EMULATE_TERMINAL" value="false" />
       <method />
     </configuration>
-    <configuration default="false" name="MSER" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="pyocr" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/MSER.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <method />
-    </configuration>
     <configuration default="false" name="make_voc_data" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -349,6 +362,24 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="pyocr" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/make_voc_data.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <method />
+    </configuration>
+    <configuration default="false" name="mulproctest" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="pyocr" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/mulproctest.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -422,16 +453,16 @@
       <item index="0" class="java.lang.String" itemvalue="Python.getcharbox" />
       <item index="1" class="java.lang.String" itemvalue="Python.char_recog" />
       <item index="2" class="java.lang.String" itemvalue="Python.char_split" />
-      <item index="3" class="java.lang.String" itemvalue="Python.MSER" />
-      <item index="4" class="java.lang.String" itemvalue="Python.make_voc_data" />
+      <item index="3" class="java.lang.String" itemvalue="Python.make_voc_data" />
+      <item index="4" class="java.lang.String" itemvalue="Python.mulproctest" />
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Python.make_voc_data" />
-        <item index="1" class="java.lang.String" itemvalue="Python.char_split" />
-        <item index="2" class="java.lang.String" itemvalue="Python.char_recog" />
-        <item index="3" class="java.lang.String" itemvalue="Python.getcharbox" />
-        <item index="4" class="java.lang.String" itemvalue="Python.MSER" />
+        <item index="0" class="java.lang.String" itemvalue="Python.mulproctest" />
+        <item index="1" class="java.lang.String" itemvalue="Python.make_voc_data" />
+        <item index="2" class="java.lang.String" itemvalue="Python.char_split" />
+        <item index="3" class="java.lang.String" itemvalue="Python.char_recog" />
+        <item index="4" class="java.lang.String" itemvalue="Python.getcharbox" />
       </list>
     </recent_temporary>
   </component>
@@ -457,11 +488,11 @@
     <frame x="65" y="-4" width="1855" height="1084" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.21952565" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.22173193" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3292683" sideWeight="0.5" order="11" side_tool="true" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.33714882" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32882413" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33714882" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32882413" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3298647" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3298647" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25813568" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -498,20 +529,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="jar://$PROJECT_DIR$/../../local/lib/python2.7/site-packages/pyocr-0.4.7-py2.7.egg!/pyocr/tesseract.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="20">
-          <caret line="64" column="8" lean-forward="false" selection-start-line="64" selection-start-column="8" selection-end-line="64" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tests/output/real/tesseract/basic_doc.box">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1440">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/.PyCharmCE2017.1/idea.properties">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="40">
@@ -767,31 +784,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/generateTestdata.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3280">
-          <caret line="174" column="0" lean-forward="false" selection-start-line="174" selection-start-column="0" selection-end-line="174" selection-end-column="0" />
-          <folding>
-            <element signature="e#21#64#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/generateCHdata.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4420">
-          <caret line="231" column="79" lean-forward="false" selection-start-line="231" selection-start-column="79" selection-end-line="231" selection-end-column="79" />
-          <folding>
-            <element signature="e#21#64#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/.PyCharmCE2017.1/system/python_stubs/-1247972723/cv2/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="311">
           <caret line="2185" column="4" lean-forward="false" selection-start-line="2185" selection-start-column="4" selection-end-line="2185" selection-end-column="4" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -810,56 +806,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/getcharbox.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4480">
-          <caret line="236" column="17" lean-forward="false" selection-start-line="236" selection-start-column="17" selection-end-line="236" selection-end-column="17" />
-          <folding>
-            <element signature="e#0#9#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tf_recog.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="495">
-          <caret line="137" column="39" lean-forward="true" selection-start-line="137" selection-start-column="39" selection-end-line="137" selection-end-column="39" />
-          <folding>
-            <element signature="e#164#173#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/generateElsedata.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="446">
-          <caret line="192" column="0" lean-forward="true" selection-start-line="192" selection-start-column="0" selection-end-line="192" selection-end-column="0" />
-          <folding>
-            <element signature="e#21#64#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/char_split.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="192" column="26" lean-forward="false" selection-start-line="192" selection-start-column="23" selection-end-line="192" selection-end-column="26" />
-          <folding>
-            <element signature="e#21#30#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/char_recog.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1066">
-          <caret line="194" column="0" lean-forward="true" selection-start-line="194" selection-start-column="0" selection-end-line="194" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#9#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/test.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="160">
@@ -868,11 +814,103 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/getcharbox.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="506">
+          <caret line="242" column="23" lean-forward="false" selection-start-line="242" selection-start-column="23" selection-end-line="242" selection-end-column="23" />
+          <folding>
+            <element signature="e#0#9#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tf_recog.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="515">
+          <caret line="54" column="76" lean-forward="false" selection-start-line="54" selection-start-column="67" selection-end-line="54" selection-end-column="76" />
+          <folding>
+            <element signature="e#164#173#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/char_recog.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="320">
+          <caret line="200" column="40" lean-forward="false" selection-start-line="200" selection-start-column="40" selection-end-line="200" selection-end-column="40" />
+          <folding>
+            <element signature="e#0#9#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/char_split.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="320">
+          <caret line="184" column="20" lean-forward="false" selection-start-line="184" selection-start-column="18" selection-end-line="184" selection-end-column="20" />
+          <folding>
+            <element signature="e#21#30#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/generateTestdata.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="772">
+          <caret line="224" column="0" lean-forward="true" selection-start-line="195" selection-start-column="0" selection-end-line="224" selection-end-column="0" />
+          <folding>
+            <element signature="e#21#64#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mulproctest.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="6" column="0" lean-forward="false" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#22#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/generateElsedata.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="450">
+          <caret line="249" column="4" lean-forward="true" selection-start-line="249" selection-start-column="4" selection-end-line="252" selection-end-column="17" />
+          <folding>
+            <element signature="e#21#64#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/generateCHdata.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="510">
+          <caret line="245" column="17" lean-forward="false" selection-start-line="245" selection-start-column="17" selection-end-line="245" selection-end-column="17" />
+          <folding>
+            <element signature="e#21#64#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/generateVocdata.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="330">
+          <caret line="246" column="12" lean-forward="false" selection-start-line="246" selection-start-column="12" selection-end-line="246" selection-end-column="12" />
+          <folding>
+            <element signature="e#21#64#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/make_voc_data.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="462">
-          <caret line="104" column="55" lean-forward="false" selection-start-line="104" selection-start-column="55" selection-end-line="104" selection-end-column="55" />
-          <folding />
+        <state relative-caret-position="280">
+          <caret line="125" column="119" lean-forward="false" selection-start-line="125" selection-start-column="114" selection-end-line="125" selection-end-column="119" />
+          <folding>
+            <element signature="e#22#58#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

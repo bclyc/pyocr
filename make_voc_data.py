@@ -1,4 +1,9 @@
+# -*-coding:utf-8-*-
+
 from xml.dom.minidom import Document
+import os
+import traceback
+
 
 def save_to_xml(save_path, im_width, im_height, im_depth, objects_axis, label_name):
     object_num = len(objects_axis)
@@ -13,7 +18,7 @@ def save_to_xml(save_path, im_width, im_height, im_depth, objects_axis, label_na
     annotation.appendChild(folder)
 
     filename = doc.createElement('filename')
-    filename_name = doc.createTextNode('000024.jpg')
+    filename_name = doc.createTextNode(save_path.split('/')[-1].replace('.xml', '.jpg'))
     filename.appendChild(filename_name)
     annotation.appendChild(filename)
 
@@ -102,4 +107,30 @@ def save_to_xml(save_path, im_width, im_height, im_depth, objects_axis, label_na
 
 
 if __name__=='__main__':
-    save_to_xml("./test.xml", 32, 32, 3, [[0, 0, 31, 31]], '3540')
+
+    if not os.path.exists("/data/MyVOC2017/ImageSets/Main/"):
+        os.makedirs("/data/MyVOC2017/ImageSets/Main/")
+    f = open("/data/MyVOC2017/ImageSets/Main/trainval.txt", 'w')
+
+    if not os.path.exists("/data/MyVOC2017/Annotations/"):
+        os.makedirs("/data/MyVOC2017/Annotations/")
+    lines = []
+    file_count = 0
+
+    for root, dirs, files in os.walk("/data/MyVOC2017/JPEGImages/"):
+        files = files.sort()
+        for file in files:
+            try:
+                new_file_name = str(file_count).zfill(8)
+                label = file.split('_')[1]
+                save_to_xml("/data/MyVOC2017/Annotations/" + new_file_name + ".xml", 32, 32, 3, [[0, 0, 31, 31]], label)
+
+                os.renames(os.path.join(root, file), os.path.join(root, new_file_name+".jpg"))
+                lines.append(new_file_name+"\n")
+            except:
+                traceback.print_exc()
+            finally:
+                file_count += 1
+
+    f.writelines(lines)
+    f.close()

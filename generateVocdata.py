@@ -80,9 +80,7 @@ class ImageChar():
 
 
 def randomGaussian(image, mean=0.2, sigma=0.3):
-
     def gaussianNoisy(im, mean=0.2, sigma=0.3):
-
         for _i in range(len(im)):
             im[_i] += random.gauss(mean, sigma)
         return im
@@ -103,6 +101,7 @@ def randomGaussian(image, mean=0.2, sigma=0.3):
 
 def getchars():
     file = open('/usr/workspace/LiuYongChao/chchars1.txt')
+    file2 = open('/usr/workspace/LiuYongChao/elsechars.txt')
     fonts = []
     while True:
         line = file.readline()
@@ -117,22 +116,39 @@ def getchars():
             if len(word) > 0:
                 word = ord(unicode(word, 'utf-8'))
                 fonts.append(word)
+    while True:
+        line = file2.readline()
+        if not line:
+            break
+        line = line.split('\r\n')[0]
 
+        if len(line) < 1:
+            continue
+        for word in line.split(' '):
+            word = word.strip()
+            if len(word) > 0:
+                word = ord(unicode(word, 'utf-8'))
+                fonts.append(word)
+
+    file.close()
+    file2.close()
     return fonts
 
 
-f = open("/data/train_test_data/charToLabel.txt","r+")
-chardict={}
+f = open("/data/train_test_data/charToLabel.txt", "r+")
+chardict = {}
 for line in f.readlines():
-    label,asc = line.strip().split(' ')[0:2]
+    label, asc = line.strip().split(' ')[0:2]
     chardict[int(asc)] = label
 
-def asciiTolabel(l):
 
+def asciiTolabel(l):
     return chardict[l]
 
 
 charsize = 32
+
+
 def printchars(chars, start, end):
     print 'fonts:', start, "-", end
     err_num = 0
@@ -146,18 +162,19 @@ def printchars(chars, start, end):
         for file in os.listdir(rootPath):
             if file is file:
                 try:
-                    ic = ImageChar(fontPath=rootPath + file, fontColor=(100, 211, 90), size=(charsize, charsize), fontSize=24)
+                    ic = ImageChar(fontPath=rootPath + file, fontColor=(100, 211, 90), size=(charsize, charsize),
+                                   fontSize=24)
                     ic.drawText((0, 0), unichr(char), ic.randRGB())
                     xmin = -1;
                     xmax = -1;
                     ymin = -1;
                     ymax = -1;
-                    for x in range(0,charsize):
-                        for y in range(0,charsize):
+                    for x in range(0, charsize):
+                        for y in range(0, charsize):
                             if ic.image.getpixel((x, y))[0] != 255:
                                 xmin = (x if xmin == -1 else xmin)
                                 break
-                        if xmin!=-1:
+                        if xmin != -1:
                             break
                     for x in reversed(range(0, charsize)):
                         for y in range(0, charsize):
@@ -183,17 +200,16 @@ def printchars(chars, start, end):
                         if ymax != -1:
                             break
 
-
-                    if xmin!=-1 and xmax!=-1:
+                    if xmin != -1 and xmax != -1:
                         # ori
                         oriImg = ic.image.crop((xmin, ymin, xmax + 1, ymax + 1)).resize((charsize, charsize),
                                                                                         Image.ANTIALIAS)
                         ic.image = oriImg
                         charlabel = asciiTolabel(char).zfill(4)
-                        if not os.path.exists('/data/train_test_data/train/' + charlabel + '/'):
-                            os.makedirs('/data/train_test_data/train/' + charlabel + '/')
-                        path = '/data/train_test_data/train/' + charlabel + '/' + charlabel + '_' + file.replace(".",
-                                                                                                                "_") + ".png"
+                        if not os.path.exists('/data/MyVOC2017/JPEGImages/'):
+                            os.makedirs('/data/MyVOC2017/JPEGImages/')
+                        path = '/data/MyVOC2017/JPEGImages/' + 'train_' + charlabel + '_' + file.replace(".",
+                                                                                                                 "_") + "ori" + ".jpg"
                         ic.save(path)
 
                         # +noise
@@ -204,14 +220,15 @@ def printchars(chars, start, end):
                             tmp.paste(oriImg)
                             ic.image = randomGaussian(tmp, mean, sigma)
                             charlabel = asciiTolabel(char).zfill(4)
-                            if not os.path.exists('/data/train_test_data/train/' + charlabel + '/'):
-                                os.makedirs('/data/train_test_data/train/' + charlabel + '/')
-                            path = '/data/train_test_data/train/' + charlabel + '/' + charlabel + '_' + file.replace(".",
-                                                                                                                    "_") + str(
-                                mean) + str(sigma) + str(i) + ".png"
+                            if not os.path.exists('/data/MyVOC2017/JPEGImages/'):
+                                os.makedirs('/data/MyVOC2017/JPEGImages/')
+                            path = '/data/MyVOC2017/JPEGImages/' + 'train_' + charlabel + '_' + file.replace(
+                                ".",
+                                "_") + str(
+                                mean) + str(sigma) + str(i) + ".jpg"
                             ic.save(path)
-                    # print "save path:", path
-                    # break
+                            # print "save path:", path
+                            # break
                 except Exception, e:
                     err_num += 1
                     traceback.print_exc()
@@ -221,11 +238,17 @@ def printchars(chars, start, end):
 if __name__ == "__main__":
     tstart = time.time()
     chars = getchars()
+    print "char num:", len(chars)
 
     procs = []
-    for i in range(48):
-        p = multiprocessing.Process(target=printchars, args=(chars, int(i*3500/48), int((i+1)*3500/48)))
-        procs.append(p)
+    p_num = 48
+    for i in range(p_num):
+        try:
+            p = multiprocessing.Process(target=printchars, args=(chars, int(i * len(chars) / p_num), int((i + 1) * len(chars) / p_num)))
+
+            procs.append(p)
+        except:
+            traceback.print_exc()
     # p1 = multiprocessing.Process(target=printchars, args=(chars, 0, 1))
     # p2 = multiprocessing.Process(target=printchars, args=(chars, 500, 1100))
     # p3 = multiprocessing.Process(target=printchars, args=(chars, 1000, 1500))
@@ -234,7 +257,7 @@ if __name__ == "__main__":
     # p6 = multiprocessing.Process(target=printchars, args=(chars, 2500, 3000))
     # p7 = multiprocessing.Process(target=printchars, args=(chars, 3000, 3500))
 
-        
+
 
     print("The number of CPU is:" + str(multiprocessing.cpu_count()))
     for p in multiprocessing.active_children():
@@ -244,7 +267,6 @@ if __name__ == "__main__":
         p.start();
     for p in procs:
         p.join();
-
 
     tend = time.time()
     print "Finished! Time used:", tend - tstart
