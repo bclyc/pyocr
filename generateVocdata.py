@@ -158,7 +158,7 @@ def printchars(chars, start, end):
         #char = 20113
         print "process:", multiprocessing.current_process().name, " saving char:", char
 
-        rootPath = "/data/fonts_train/"
+        rootPath = "/data/fonts_test/"
         for file in os.listdir(rootPath):
             if file is file:
                 try:
@@ -208,7 +208,7 @@ def printchars(chars, start, end):
                         charlabel = asciiTolabel(char).zfill(4)
                         if not os.path.exists('/data/MyVOC2017/JPEGImages/'):
                             os.makedirs('/data/MyVOC2017/JPEGImages/')
-                        path = '/data/MyVOC2017/JPEGImages/' + 'train_' + charlabel + '_' + file.replace(".",
+                        path = '/data/MyVOC2017/JPEGImages/' + 'test_' + charlabel + '_' + file.replace(".",
                                                                                                                  "_") + "ori" + ".jpg"
                         ic.save(path)
 
@@ -222,7 +222,7 @@ def printchars(chars, start, end):
                             charlabel = asciiTolabel(char).zfill(4)
                             if not os.path.exists('/data/MyVOC2017/JPEGImages/'):
                                 os.makedirs('/data/MyVOC2017/JPEGImages/')
-                            path = '/data/MyVOC2017/JPEGImages/' + 'train_' + charlabel + '_' + file.replace(
+                            path = '/data/MyVOC2017/JPEGImages/' + 'test_' + charlabel + '_' + file.replace(
                                 ".",
                                 "_") + str(
                                 mean) + str(sigma) + str(i) + ".jpg"

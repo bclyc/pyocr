@@ -3,6 +3,9 @@
 from xml.dom.minidom import Document
 import os
 import traceback
+import time
+import multiprocessing
+from PIL import Image
 
 
 def save_to_xml(save_path, im_width, im_height, im_depth, objects_axis, label_name):
@@ -13,7 +16,7 @@ def save_to_xml(save_path, im_width, im_height, im_depth, objects_axis, label_na
     doc.appendChild(annotation)
 
     folder = doc.createElement('folder')
-    folder_name = doc.createTextNode('Char2007')
+    folder_name = doc.createTextNode('MyVOC2017')
     folder.appendChild(folder_name)
     annotation.appendChild(folder)
 
@@ -73,7 +76,7 @@ def save_to_xml(save_path, im_width, im_height, im_depth, objects_axis, label_na
         objects = doc.createElement('object')
         annotation.appendChild(objects)
         object_name = doc.createElement('name')
-        object_name.appendChild(doc.createTextNode(label_name))
+        object_name.appendChild(doc.createTextNode(label_name[i]))
         objects.appendChild(object_name)
         pose = doc.createElement('pose')
         pose.appendChild(doc.createTextNode('Unspecified'))
@@ -106,31 +109,79 @@ def save_to_xml(save_path, im_width, im_height, im_depth, objects_axis, label_na
     f.close()
 
 
+
+def gen_pic(pic_files, start, end):
+    print "process:", multiprocessing.current_process().name, " saving :", start, "-", end
+    filename_start_num = 30278
+    for pic_ind in range(start, end):
+        t1 = time.time()
+        print "process%", "/", float(pic_ind-start)/float(end-start)
+        new_file_name = str(filename_start_num+pic_ind).zfill(6)
+
+        big_img = Image.new('RGB',(320,320),(255,255,255))
+        objects_axis = []
+        labels = []
+        for i in range(100):
+            char_img = Image.open(pic_files[pic_ind*100+i])
+            y = (i % 10)*32
+            x = (i / 10)*32
+            big_img.paste(char_img, (x, y))
+
+            objects_axis.append([x, y, x+31, y+31])
+            labels.append(pic_files[pic_ind*100+i].split('/')[-1].split('_')[0])
+
+        big_img.save("/data/MyVOC2017/JPEGImages/"+new_file_name+".jpg")
+        save_to_xml("/data/MyVOC2017/Annotations/" + new_file_name + ".xml", 320, 320, 3, objects_axis, labels)
+
+        #lines.append(new_file_name + "\n")
+        #print "one pic time", time.time() - t1
+
+
 if __name__=='__main__':
+
 
     if not os.path.exists("/data/MyVOC2017/ImageSets/Main/"):
         os.makedirs("/data/MyVOC2017/ImageSets/Main/")
-    f = open("/data/MyVOC2017/ImageSets/Main/trainval.txt", 'w')
+
+    #f = open("/data/MyVOC2017/ImageSets/Main/test.txt", 'w')
 
     if not os.path.exists("/data/MyVOC2017/Annotations/"):
         os.makedirs("/data/MyVOC2017/Annotations/")
-    lines = []
+
+
+
     file_count = 0
 
-    for root, dirs, files in os.walk("/data/MyVOC2017/JPEGImages/"):
-        files = files.sort()
-        for file in files:
-            try:
-                new_file_name = str(file_count).zfill(8)
-                label = file.split('_')[1]
-                save_to_xml("/data/MyVOC2017/Annotations/" + new_file_name + ".xml", 32, 32, 3, [[0, 0, 31, 31]], label)
+    t0 = time.time()
+    pic_files = []
+    for root, dirs, files in os.walk("/data/train_test_data/32test"):
+        if len(files)>0:
+            pic_files += [os.path.join(root, file) for file in files]
+    pic_files.sort()
+    print "read files time:", time.time() - t0
 
-                os.renames(os.path.join(root, file), os.path.join(root, new_file_name+".jpg"))
-                lines.append(new_file_name+"\n")
-            except:
-                traceback.print_exc()
-            finally:
-                file_count += 1
+    out_pic_num = len(pic_files)/100
+    filename_start_num = 30278
+    procs = []
+    p_num = 48
+    for i in range(p_num):
+        try:
+            p = multiprocessing.Process(target=gen_pic,
+                                        args=(pic_files, int(i * out_pic_num / p_num), int((i + 1) * out_pic_num / p_num)))
 
+            procs.append(p)
+        except:
+            traceback.print_exc()
+
+    for p in procs:
+        p.start();
+    for p in procs:
+        p.join();
+
+    f = open("/data/MyVOC2017/ImageSets/Main/test.txt", 'w')
+    lines = [str(i).zfill(6)+"\n" for i in range(filename_start_num, filename_start_num+out_pic_num)]
     f.writelines(lines)
     f.close()
+
+    print "total time:", time.time() - t0
+
