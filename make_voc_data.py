@@ -112,7 +112,7 @@ def save_to_xml(save_path, im_width, im_height, im_depth, objects_axis, label_na
 
 def gen_pic(pic_files, start, end):
     print "process:", multiprocessing.current_process().name, " saving :", start, "-", end
-    filename_start_num = 30278
+    filename_start_num = 149
     for pic_ind in range(start, end):
         t1 = time.time()
         print "process%", "/", float(pic_ind-start)/float(end-start)
@@ -143,25 +143,27 @@ if __name__=='__main__':
     if not os.path.exists("/data/MyVOC2017/ImageSets/Main/"):
         os.makedirs("/data/MyVOC2017/ImageSets/Main/")
 
-    #f = open("/data/MyVOC2017/ImageSets/Main/test.txt", 'w')
-
     if not os.path.exists("/data/MyVOC2017/Annotations/"):
         os.makedirs("/data/MyVOC2017/Annotations/")
 
+    if not os.path.exists("/data/MyVOC2017/JPEGImages/"):
+        os.makedirs("/data/MyVOC2017/JPEGImages/")
 
+    char20test = [1510,2047,104,1001,436,2228,1175,1502,1011,1007,3262,2502,2371,3570,2113,2110,2137,2133,179,2868]
+    char20test = [str(char) for char in char20test]
 
     file_count = 0
 
     t0 = time.time()
     pic_files = []
     for root, dirs, files in os.walk("/data/train_test_data/32test"):
-        if len(files)>0:
+        if len(files)>0 and root.split('/')[-1] in char20test:
             pic_files += [os.path.join(root, file) for file in files]
     pic_files.sort()
-    print "read files time:", time.time() - t0
+    print "read files time:", time.time() - t0, "filenum:", len(pic_files)
 
     out_pic_num = len(pic_files)/100
-    filename_start_num = 30278
+    filename_start_num = 149
     procs = []
     p_num = 48
     for i in range(p_num):
